@@ -1,0 +1,1267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BidWise AI — RFP Analysis Service</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-grad-start: #0b0f19;
+            --bg-grad-end: #020408;
+            --accent: #6366f1;
+            --accent-hover: #4f46e5;
+            --accent-glow: rgba(99, 102, 241, 0.25);
+            --accent-subtle: rgba(99, 102, 241, 0.1);
+            --glass: rgba(255, 255, 255, 0.02);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-hover: rgba(255, 255, 255, 0.05);
+            --glass-card: rgba(13, 20, 35, 0.7);
+            --text: #f3f4f6;
+            --text-muted: #9ca3af;
+            --danger: #ef4444;
+            --danger-bg: rgba(239, 68, 68, 0.08);
+            --danger-border: rgba(239, 68, 68, 0.2);
+            --warning: #f59e0b;
+            --warning-bg: rgba(245, 158, 11, 0.08);
+            --warning-border: rgba(245, 158, 11, 0.2);
+            --success: #10b981;
+            --success-bg: rgba(16, 185, 129, 0.1);
+            --success-border: rgba(16, 185, 129, 0.2);
+            --shadow-glow: 0 0 40px rgba(99, 102, 241, 0.1);
+            --border-radius-lg: 16px;
+            --border-radius-md: 12px;
+            --font-main: 'Plus Jakarta Sans', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background: radial-gradient(circle at 50% -20%, #1e1b4b 0%, var(--bg-grad-start) 45%, var(--bg-grad-end) 100%);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem 1rem;
+            overflow-x: hidden;
+        }
+
+        /* Container & Header */
+        .container {
+            width: 100%;
+            max-width: 1100px;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            z-index: 10;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 1rem;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        .logo-container {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .logo-icon {
+            color: var(--accent);
+            animation: pulse-glow 3s infinite ease-in-out;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ffffff 40%, #a5b4fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.025em;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+            font-weight: 400;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Dropzone / Upload Area */
+        .card {
+            background: var(--glass-card);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--border-radius-lg);
+            padding: 2.5rem;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        .upload-section {
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .dropzone {
+            border: 2px dashed var(--glass-border);
+            border-radius: var(--border-radius-md);
+            padding: 4rem 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: rgba(255, 255, 255, 0.01);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.25rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dropzone::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at center, var(--accent-glow) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .dropzone:hover {
+            border-color: var(--accent);
+            background: rgba(255, 255, 255, 0.02);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .dropzone:hover::before {
+            opacity: 1;
+        }
+
+        .dropzone.dragover {
+            border-color: var(--accent);
+            background: var(--accent-subtle);
+            transform: scale(0.995);
+        }
+
+        .upload-icon {
+            width: 64px;
+            height: 64px;
+            background: var(--accent-subtle);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent);
+            transition: all 0.3s ease;
+        }
+
+        .dropzone:hover .upload-icon {
+            transform: scale(1.1);
+            background: var(--accent);
+            color: #fff;
+        }
+
+        .upload-text h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .upload-text p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .file-limit {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            border: 1px solid var(--glass-border);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        #file-input {
+            display: none;
+        }
+
+        /* Loading View */
+        .loading-section {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem;
+            text-align: center;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .spinner-wrapper {
+            position: relative;
+            margin-bottom: 2rem;
+        }
+
+        .spinner {
+            width: 72px;
+            height: 72px;
+            border: 3px solid rgba(255, 255, 255, 0.05);
+            border-top: 3px solid var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .spinner-glow {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            box-shadow: var(--shadow-glow);
+            animation: pulse-glow-scale 2s infinite ease-in-out;
+        }
+
+        .loading-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.01em;
+        }
+
+        .loading-status {
+            color: var(--text-muted);
+            font-size: 1rem;
+            min-height: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            max-width: 320px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 0 auto;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--accent) 0%, #a5b4fc 100%);
+            border-radius: 10px;
+            transition: width 0.4s cubic-bezier(0.1, 0.8, 0.3, 1);
+        }
+
+        /* Results / Dashboard View */
+        .results-section {
+            display: none;
+            flex-direction: column;
+            gap: 2rem;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            border-bottom: 1px solid var(--glass-border);
+            padding-bottom: 1.5rem;
+        }
+
+        .results-info-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .file-badge-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .filename-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .badge {
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.25rem 0.6rem;
+            border-radius: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .badge-pdf {
+            background: var(--danger-bg);
+            color: var(--danger);
+            border: 1px solid var(--danger-border);
+        }
+
+        .badge-docx {
+            background: rgba(59, 130, 246, 0.1);
+            color: #3b82f6;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .org-badge {
+            font-size: 0.9rem;
+            font-weight: 600;
+            padding: 0.4rem 0.8rem;
+            border-radius: 8px;
+            background: var(--accent-subtle);
+            color: #a5b4fc;
+            border: 1px solid var(--glass-border);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            width: fit-content;
+        }
+
+        .metadata-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+            width: 100%;
+        }
+
+        .metadata-item {
+            background: rgba(255, 255, 255, 0.01);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--border-radius-md);
+            padding: 0.75rem 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .metadata-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .metadata-value {
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        /* Action Buttons */
+        .button-group {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            font-family: var(--font-main);
+            font-size: 0.9rem;
+            font-weight: 600;
+            padding: 0.75rem 1.25rem;
+            border-radius: var(--border-radius-md);
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--text);
+            border: 1px solid var(--glass-border);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        /* Dashboard Grid Layout */
+        .dashboard-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--glass-border);
+            gap: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .tab-btn {
+            font-family: var(--font-main);
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            padding: 0.75rem 0.5rem;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            position: relative;
+            transition: color 0.2s ease;
+        }
+
+        .tab-btn:hover {
+            color: var(--text);
+        }
+
+        .tab-btn.active {
+            color: var(--accent);
+        }
+
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--accent);
+            box-shadow: 0 0 8px var(--accent);
+        }
+
+        .dashboard-content {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .tab-panel {
+            display: none;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .tab-panel.active {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        /* UI Cards */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 900px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .panel-card {
+            background: rgba(255, 255, 255, 0.01);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--border-radius-md);
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .panel-card-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            padding-bottom: 0.75rem;
+        }
+
+        .card-project-overview {
+            line-height: 1.6;
+            font-size: 1.05rem;
+            color: #e2e8f0;
+        }
+
+        /* List Items Styling */
+        .list-items {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .list-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            line-height: 1.5;
+            font-size: 0.95rem;
+        }
+
+        .list-icon {
+            margin-top: 0.15rem;
+            flex-shrink: 0;
+            color: var(--success);
+        }
+
+        /* Risks Specific Styles */
+        .card-risks {
+            background: var(--warning-bg);
+            border-color: var(--warning-border);
+        }
+
+        .card-risks .panel-card-title {
+            color: var(--warning);
+            border-bottom-color: rgba(245, 158, 11, 0.1);
+        }
+
+        .risk-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            background: rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(245, 158, 11, 0.1);
+            padding: 1rem;
+            border-radius: var(--border-radius-md);
+            line-height: 1.5;
+            font-size: 0.95rem;
+        }
+
+        .risk-icon {
+            color: var(--warning);
+            flex-shrink: 0;
+            margin-top: 0.15rem;
+        }
+
+        /* Deadlines Table/Timeline */
+        .deadlines-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.95rem;
+        }
+
+        .deadlines-table th, .deadlines-table td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .deadlines-table th {
+            font-weight: 600;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .deadlines-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .deadline-label {
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .deadline-value {
+            color: #cbd5e1;
+        }
+
+        .no-data-msg {
+            color: var(--text-muted);
+            font-style: italic;
+            padding: 1rem 0;
+            text-align: center;
+        }
+
+        /* Raw JSON Viewer */
+        .json-pre-wrapper {
+            position: relative;
+        }
+
+        .btn-copy {
+            position: absolute;
+            top: 0.75rem;
+            right: 0.75rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            padding: 0.4rem 0.75rem;
+            font-size: 0.75rem;
+            border-radius: 6px;
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: var(--font-main);
+            font-weight: 500;
+        }
+
+        .btn-copy:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-copy.copied {
+            background: var(--success-bg);
+            color: var(--success);
+            border-color: var(--success-border);
+        }
+
+        pre {
+            background: #030712;
+            border: 1px solid var(--glass-border);
+            border-radius: var(--border-radius-md);
+            padding: 1.5rem;
+            overflow-x: auto;
+            max-height: 500px;
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            color: #a5b4fc;
+            line-height: 1.5;
+        }
+
+        /* Error Banner */
+        .error-banner {
+            display: none;
+            background: var(--danger-bg);
+            border: 1px solid var(--danger-border);
+            border-radius: var(--border-radius-md);
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+            align-items: flex-start;
+            gap: 0.75rem;
+            animation: shake 0.4s ease;
+        }
+
+        .error-icon {
+            color: var(--danger);
+            flex-shrink: 0;
+            margin-top: 0.1rem;
+        }
+
+        .error-message {
+            font-size: 0.95rem;
+            color: #fca5a5;
+            line-height: 1.5;
+        }
+
+        /* Footer */
+        footer {
+            margin-top: auto;
+            padding-top: 3rem;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-align: center;
+        }
+
+        /* Keyframe Animations */
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { filter: drop-shadow(0 0 4px var(--accent)); opacity: 0.8; }
+            50% { filter: drop-shadow(0 0 15px var(--accent)); opacity: 1; }
+        }
+
+        @keyframes pulse-glow-scale {
+            0%, 100% { transform: scale(1); opacity: 0.3; }
+            50% { transform: scale(1.15); opacity: 0.6; }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-6px); }
+            40%, 80% { transform: translateX(6px); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo-container">
+                <svg class="logo-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                </svg>
+                <h1 style="font-size: 1.8rem; font-weight: 700; margin: 0; background: linear-gradient(135deg, #ffffff 60%, #818cf8 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">BidWise AI</h1>
+            </div>
+            <h1>RFP Analysis Service</h1>
+            <p class="subtitle">Extract text, isolate key terms, and construct structured executive summaries from RFP/RFQ documents in seconds using Gemini 2.5.</p>
+        </header>
+
+        <!-- Main Upload Card -->
+        <main class="card upload-section" id="upload-panel">
+            <!-- Error Banner -->
+            <div class="error-banner" id="error-banner">
+                <svg class="error-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+                <div class="error-message" id="error-text">An error occurred during RFP processing.</div>
+            </div>
+
+            <div class="dropzone" id="dropzone">
+                <div class="upload-icon">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="17 8 12 3 7 8"></polyline>
+                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                    </svg>
+                </div>
+                <div class="upload-text">
+                    <h3>Upload RFP document</h3>
+                    <p>Drag and drop your file here, or click to browse</p>
+                </div>
+                <span class="file-limit">PDF or DOCX up to 25MB</span>
+                <input type="file" id="file-input" accept=".pdf,.docx">
+            </div>
+        </main>
+
+        <!-- Loading State Card -->
+        <div class="card loading-section" id="loading-panel">
+            <div class="spinner-wrapper">
+                <div class="spinner"></div>
+                <div class="spinner-glow"></div>
+            </div>
+            <h2 class="loading-title">Analyzing RFP Document</h2>
+            <div class="loading-status" id="loading-status">Uploading file...</div>
+            <div class="progress-bar-container">
+                <div class="progress-bar-fill" id="progress-fill"></div>
+            </div>
+        </div>
+
+        <!-- Analysis Results Dashboard Card -->
+        <div class="card results-section" id="results-panel">
+            <div class="results-header">
+                <div class="results-info-group">
+                    <div class="file-badge-wrapper">
+                        <span class="filename-text" id="res-filename">rfp_document.pdf</span>
+                        <span class="badge" id="res-file-type-badge">pdf</span>
+                    </div>
+                    <div id="res-issuing-org-wrapper">
+                        <!-- Issuing organization loaded dynamically -->
+                    </div>
+                </div>
+                <div class="button-group">
+                    <button class="btn btn-secondary" id="btn-reset">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="23 4 23 10 17 10"></polyline>
+                            <polyline points="1 20 1 14 7 14"></polyline>
+                            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                        </svg>
+                        Analyze Another
+                    </button>
+                </div>
+            </div>
+
+            <!-- Metadata Cards Row -->
+            <div class="metadata-grid">
+                <div class="metadata-item">
+                    <span class="metadata-label">File Type</span>
+                    <span class="metadata-value" id="meta-type">PDF</span>
+                </div>
+                <div class="metadata-item">
+                    <span class="metadata-label">Total Pages</span>
+                    <span class="metadata-value" id="meta-pages">14</span>
+                </div>
+                <div class="metadata-item">
+                    <span class="metadata-label">Characters</span>
+                    <span class="metadata-value" id="meta-chars">42,501</span>
+                </div>
+                <div class="metadata-item">
+                    <span class="metadata-label">Processing Time</span>
+                    <span class="metadata-value" id="meta-time">4.20s</span>
+                </div>
+            </div>
+
+            <!-- Tabs Navigation -->
+            <div class="dashboard-tabs">
+                <button class="tab-btn active" data-tab="summary">Dashboard View</button>
+                <button class="tab-btn" data-tab="raw-json">Raw JSON</button>
+            </div>
+
+            <div class="dashboard-content">
+                <!-- Tab 1: Dashboard View -->
+                <div class="tab-panel active" id="tab-summary">
+                    <div class="dashboard-grid">
+                        <!-- Left Main Panel -->
+                        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                            <!-- Project Overview -->
+                            <div class="panel-card">
+                                <h3 class="panel-card-title">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
+                                        <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path>
+                                        <polyline points="14 2 14 8 20 8"></polyline>
+                                    </svg>
+                                    Project Overview
+                                </h3>
+                                <p class="card-project-overview" id="res-overview">No overview available.</p>
+                            </div>
+
+                            <!-- Key Requirements -->
+                            <div class="panel-card">
+                                <h3 class="panel-card-title">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
+                                        <polyline points="9 11 12 14 22 4"></polyline>
+                                        <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                                    </svg>
+                                    Key Requirements
+                                </h3>
+                                <ul class="list-items" id="res-requirements">
+                                    <!-- Populated dynamically -->
+                                </ul>
+                            </div>
+
+                            <!-- Evaluation Criteria -->
+                            <div class="panel-card">
+                                <h3 class="panel-card-title">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
+                                        <line x1="18" y1="20" x2="18" y2="10"></line>
+                                        <line x1="12" y1="20" x2="12" y2="4"></line>
+                                        <line x1="6" y1="20" x2="6" y2="14"></line>
+                                    </svg>
+                                    Evaluation Criteria
+                                </h3>
+                                <ul class="list-items" id="res-evaluation">
+                                    <!-- Populated dynamically -->
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Right Sidebar Panel -->
+                        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                            <!-- Deadlines -->
+                            <div class="panel-card">
+                                <h3 class="panel-card-title">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
+                                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                                    </svg>
+                                    Critical Deadlines
+                                </h3>
+                                <table class="deadlines-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Milestone</th>
+                                            <th>Date / Detail</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="res-deadlines">
+                                        <!-- Populated dynamically -->
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Important Risks -->
+                            <div class="panel-card card-risks">
+                                <h3 class="panel-card-title">
+                                    <svg class="risk-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                                        <line x1="12" y1="9" x2="12" y2="13"></line>
+                                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                                    </svg>
+                                    Key Risks & Alerts
+                                </h3>
+                                <div class="list-items" id="res-risks" style="gap: 0.50rem;">
+                                    <!-- Populated dynamically -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 2: Raw JSON View -->
+                <div class="tab-panel" id="tab-raw-json">
+                    <div class="json-pre-wrapper">
+                        <button class="btn-copy" id="btn-copy">Copy to Clipboard</button>
+                        <pre><code class="language-json" id="raw-json-output">{}</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 BidWise AI. Internal RFP analysis tool. Powered by Gemini 2.5.</p>
+    </footer>
+
+    <script>
+        // DOM Elements
+        const dropzone = document.getElementById('dropzone');
+        const fileInput = document.getElementById('file-input');
+        const errorBanner = document.getElementById('error-banner');
+        const errorText = document.getElementById('error-text');
+        
+        const uploadPanel = document.getElementById('upload-panel');
+        const loadingPanel = document.getElementById('loading-panel');
+        const resultsPanel = document.getElementById('results-panel');
+        
+        const loadingStatus = document.getElementById('loading-status');
+        const progressFill = document.getElementById('progress-fill');
+        
+        const resFilename = document.getElementById('res-filename');
+        const resFileTypeBadge = document.getElementById('res-file-type-badge');
+        const resIssuingOrgWrapper = document.getElementById('res-issuing-org-wrapper');
+        const metaType = document.getElementById('meta-type');
+        const metaPages = document.getElementById('meta-pages');
+        const metaChars = document.getElementById('meta-chars');
+        const metaTime = document.getElementById('meta-time');
+        
+        const resOverview = document.getElementById('res-overview');
+        const resRequirements = document.getElementById('res-requirements');
+        const resEvaluation = document.getElementById('res-evaluation');
+        const resDeadlines = document.getElementById('res-deadlines');
+        const resRisks = document.getElementById('res-risks');
+        const rawJsonOutput = document.getElementById('raw-json-output');
+        
+        const btnReset = document.getElementById('btn-reset');
+        const btnCopy = document.getElementById('btn-copy');
+        
+        let analysisData = null;
+
+        // Progress simulation helper
+        let simulatedProgressInterval = null;
+        function startProgressSimulation() {
+            let width = 0;
+            let step = 0;
+            progressFill.style.width = '0%';
+            
+            const steps = [
+                { limit: 25, label: "Uploading file to server..." },
+                { limit: 55, label: "Extracting text and identifying document structure..." },
+                { limit: 85, label: "Sending payload to Gemini 2.5 for analysis..." },
+                { limit: 98, label: "Parsing structure and validating JSON output..." }
+            ];
+            
+            loadingStatus.innerText = steps[0].label;
+            
+            simulatedProgressInterval = setInterval(() => {
+                if (width < 98) {
+                    width += Math.random() * 8;
+                    if (width > 98) width = 98;
+                    progressFill.style.width = width + '%';
+                    
+                    // Update status label based on current progress percentage
+                    const activeStep = steps.find(s => width <= s.limit) || steps[steps.length - 1];
+                    loadingStatus.innerText = activeStep.label;
+                }
+            }, 600);
+        }
+
+        function completeProgressSimulation() {
+            clearInterval(simulatedProgressInterval);
+            progressFill.style.width = '100%';
+            loadingStatus.innerText = "Analysis complete!";
+        }
+
+        function stopProgressSimulation() {
+            clearInterval(simulatedProgressInterval);
+            progressFill.style.width = '0%';
+        }
+
+        // Drag & Drop event listeners
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropzone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                dropzone.classList.add('dragover');
+            }, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropzone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                dropzone.classList.remove('dragover');
+            }, false);
+        });
+
+        dropzone.addEventListener('drop', (e) => {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            if (files.length > 0) {
+                handleFile(files[0]);
+            }
+        });
+
+        dropzone.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleFile(e.target.files[0]);
+            }
+        });
+
+        // Core upload and analyze trigger
+        function handleFile(file) {
+            // Validation
+            const name = file.name.toLowerCase();
+            if (!name.endsWith('.pdf') && !name.endsWith('.docx')) {
+                showError("Unsupported file type. Please upload a PDF or DOCX file.");
+                return;
+            }
+
+            if (file.size > 25 * 1024 * 1024) {
+                showError("File size exceeds 25MB limit.");
+                return;
+            }
+
+            hideError();
+            
+            // Switch view to loading
+            uploadPanel.style.display = 'none';
+            loadingPanel.style.display = 'flex';
+            startProgressSimulation();
+
+            // Prepare form data
+            const formData = new FormData();
+            formData.append('file', file);
+
+            // Send request
+            fetch('/analyze', {
+                method: 'POST',
+                body: formData
+            })
+            .then(async (response) => {
+                const data = await response.json();
+                if (!response.ok) {
+                    throw new Error(data.detail || "Server error occurred while analyzing the document.");
+                }
+                return data;
+            })
+            .then((data) => {
+                completeProgressSimulation();
+                setTimeout(() => {
+                    displayResults(data);
+                }, 400);
+            })
+            .catch((error) => {
+                stopProgressSimulation();
+                loadingPanel.style.display = 'none';
+                uploadPanel.style.display = 'block';
+                showError(error.message || "An unexpected network error occurred.");
+            });
+        }
+
+        // Display results page logic
+        function displayResults(data) {
+            analysisData = data;
+            
+            // File info & metadata
+            resFilename.innerText = data.filename;
+            const ext = data.file_type.toLowerCase();
+            resFileTypeBadge.innerText = ext;
+            resFileTypeBadge.className = `badge badge-${ext}`;
+            
+            metaType.innerText = ext.toUpperCase();
+            metaPages.innerText = data.page_count > 0 ? data.page_count : 'N/A (DOCX)';
+            
+            // Format character count
+            metaChars.innerText = new Intl.NumberFormat().format(data.char_count);
+            metaTime.innerText = data.processing_time_seconds.toFixed(2) + 's';
+
+            // Issuing Organization
+            resIssuingOrgWrapper.innerHTML = '';
+            const summary = data.executive_summary;
+            if (summary.issuing_organization) {
+                const orgEl = document.createElement('div');
+                orgEl.className = 'org-badge';
+                orgEl.innerHTML = `
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="2" y="10" width="20" height="12" rx="2" ry="2"></rect>
+                        <path d="M12 22V10"></path>
+                        <path d="M17 22V14a2 2 0 0 0-2-2h-6a2 2 0 0 0-2 2v8"></path>
+                        <path d="M9 10V6a3 3 0 0 1 6 0v4"></path>
+                    </svg>
+                    Issuer: ${summary.issuing_organization}
+                `;
+                resIssuingOrgWrapper.appendChild(orgEl);
+            }
+
+            // Project Overview
+            resOverview.innerText = summary.project_overview || "No project overview available.";
+
+            // Key Requirements List
+            populateList(resRequirements, summary.key_requirements, `
+                <svg class="list-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+            `);
+
+            // Evaluation Criteria List
+            populateList(resEvaluation, summary.evaluation_criteria, `
+                <svg class="list-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 16 16 12 12 8"></polyline>
+                    <line x1="8" y1="12" x2="16" y2="12"></line>
+                </svg>
+            `);
+
+            // Deadlines Table
+            resDeadlines.innerHTML = '';
+            if (summary.deadlines && summary.deadlines.length > 0) {
+                summary.deadlines.forEach(item => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td class="deadline-label">${item.label}</td>
+                        <td class="deadline-value">${item.date_or_detail}</td>
+                    `;
+                    resDeadlines.appendChild(row);
+                });
+            } else {
+                resDeadlines.innerHTML = '<tr><td colspan="2" class="no-data-msg">No deadlines specified in the document.</td></tr>';
+            }
+
+            // Risks
+            resRisks.innerHTML = '';
+            if (summary.important_risks && summary.important_risks.length > 0) {
+                summary.important_risks.forEach(risk => {
+                    const el = document.createElement('div');
+                    el.className = 'risk-item';
+                    el.innerHTML = `
+                        <svg class="risk-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                        </svg>
+                        <div>${risk}</div>
+                    `;
+                    resRisks.appendChild(el);
+                });
+            } else {
+                resRisks.innerHTML = '<div class="no-data-msg" style="color: var(--warning);">No major risks explicitly flagged.</div>';
+            }
+
+            // Raw JSON Output
+            rawJsonOutput.textContent = JSON.stringify(data, null, 4);
+
+            // Transitions
+            loadingPanel.style.display = 'none';
+            resultsPanel.style.display = 'flex';
+        }
+
+        // Helper to populate lists
+        function populateList(parent, items, iconSvg) {
+            parent.innerHTML = '';
+            if (items && items.length > 0) {
+                items.forEach(item => {
+                    const li = document.createElement('li');
+                    li.className = 'list-item';
+                    li.innerHTML = `${iconSvg}<div>${item}</div>`;
+                    parent.appendChild(li);
+                });
+            } else {
+                parent.innerHTML = '<li class="no-data-msg">Not specified in document.</li>';
+            }
+        }
+
+        // Error display helpers
+        function showError(msg) {
+            errorText.innerText = msg;
+            errorBanner.style.display = 'flex';
+            errorBanner.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function hideError() {
+            errorBanner.style.display = 'none';
+        }
+
+        // Reset to upload screen
+        btnReset.addEventListener('click', () => {
+            fileInput.value = '';
+            resultsPanel.style.display = 'none';
+            uploadPanel.style.display = 'block';
+        });
+
+        // Tabs Toggle Logic
+        const tabButtons = document.querySelectorAll('.tab-btn');
+        const tabPanels = document.querySelectorAll('.tab-panel');
+
+        tabButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const targetTab = btn.getAttribute('data-tab');
+                
+                // Set button state
+                tabButtons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                // Toggle panels
+                tabPanels.forEach(p => {
+                    p.classList.remove('active');
+                    if (p.getAttribute('id') === `tab-${targetTab}`) {
+                        p.classList.add('active');
+                    }
+                });
+            });
+        });
+
+        // Copy JSON logic
+        btnCopy.addEventListener('click', () => {
+            if (!analysisData) return;
+            
+            navigator.clipboard.writeText(JSON.stringify(analysisData, null, 4))
+                .then(() => {
+                    btnCopy.innerText = "Copied!";
+                    btnCopy.classList.add('copied');
+                    setTimeout(() => {
+                        btnCopy.innerText = "Copy to Clipboard";
+                        btnCopy.classList.remove('copied');
+                    }, 2000);
+                })
+                .catch(err => {
+                    alert("Failed to copy JSON: " + err);
+                });
+        });
+    </script>
+</body>
+</html>
