@@ -57,7 +57,7 @@ def _get_client() -> genai.Client:
     api_key = os.environ.get("GEMINI_API_KEY")
     if not api_key:
         raise SummarizationError(
-            "GEMINI_API_KEY is not set. Copy .env.example to .env and add your key."
+            "GEMINI_API_KEY is not set."
         )
     return genai.Client(api_key=api_key)
 
