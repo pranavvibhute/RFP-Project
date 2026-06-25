@@ -1,21 +1,23 @@
-type Props = {
+import { Card } from "@/components/ui";
+
+interface KPICardProps {
   title: string;
   value: number;
-};
+}
 
 export default function KPICard({
   title,
   value,
-}: Props) {
+}: KPICardProps) {
   return (
-    <div className="bg-white shadow rounded-xl p-6">
-      <h2 className="text-gray-500">
+    <Card>
+      <p className="text-sm text-gray-500">
         {title}
-      </h2>
-
-      <p className="text-3xl font-bold">
-        {value}
       </p>
-    </div>
+
+      <h2 className="mt-2 text-4xl font-bold">
+        {value}
+      </h2>
+    </Card>
   );
 }

@@ -2,28 +2,56 @@ import Link from "next/link";
 
 export default function Sidebar() {
   return (
-    <aside className="w-64 min-h-screen bg-slate-900 text-white p-6">
-      <h2 className="text-xl font-bold mb-6">
-        Navigation
-      </h2>
+    <aside className="w-64 bg-slate-900 text-white min-h-screen">
 
-      <ul className="space-y-4">
-        <li>
-          <Link href="/dashboard">Dashboard</Link>
-        </li>
+      <div className="p-6 text-2xl font-bold">
+        Menu
+      </div>
 
-        <li>
-          <Link href="/upload">Upload RFP</Link>
-        </li>
+      <nav className="px-4">
 
-        <li>
-          <Link href="/login">Login</Link>
-        </li>
+        <ul className="space-y-2">
 
-        <li>
-          <Link href="/register">Register</Link>
-        </li>
-      </ul>
+          <li>
+            <Link
+              href="/dashboard"
+              className="block rounded-lg px-4 py-3 hover:bg-slate-700"
+            >
+              Dashboard
+            </Link>
+          </li>
+
+          <li>
+            <Link
+              href="/upload"
+              className="block rounded-lg px-4 py-3 hover:bg-slate-700"
+            >
+              Upload RFP
+            </Link>
+          </li>
+
+          <li>
+            <Link
+              href="/login"
+              className="block rounded-lg px-4 py-3 hover:bg-slate-700"
+            >
+              Login
+            </Link>
+          </li>
+
+          <li>
+            <Link
+              href="/register"
+              className="block rounded-lg px-4 py-3 hover:bg-slate-700"
+            >
+              Register
+            </Link>
+          </li>
+
+        </ul>
+
+      </nav>
+
     </aside>
   );
 }
