@@ -1,18 +1,23 @@
 import DashboardLayout from "@/components/layout/DashboardLayout";
-import WelcomeBanner from "@/components/dashboard/WelcomeBanner";
-import DashboardStats from "@/components/dashboard/DashboardStats";
-import RecentRFPTable from "@/components/dashboard/RecentRFPTable";
+import RFPOverviewSection from "@/components/dashboard/RFPOverviewSection";
+import ComplianceSessionsSection from "@/components/dashboard/ComplianceSessionsSection";
+import RecentExtractionsSection from "@/components/dashboard/RecentExtractionsSection";
+import RevenueBookingsSection from "@/components/dashboard/RevenueBookingsSection";
 
 export default function DashboardPage() {
   return (
     <DashboardLayout>
-      <WelcomeBanner />
+      {/* Section 1: RFPs & Submissions */}
+      <RFPOverviewSection />
 
-      <div className="mt-8">
-        <DashboardStats />
-      </div>
+      {/* Section 2: Sessions */}
+      <ComplianceSessionsSection />
 
-      <RecentRFPTable />
+      {/* Section 3: Check-ins */}
+      <RecentExtractionsSection />
+
+      {/* Section 4: Revenue & Bookings */}
+      <RevenueBookingsSection />
     </DashboardLayout>
   );
 }

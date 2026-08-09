@@ -9,6 +9,11 @@ from app.models.user_profile import UserProfile
 from app.models.rfp import RFP
 from app.models.analysis import Analysis
 from app.models.requirement import Requirement
+<<<<<<< HEAD
+=======
+from app.schemas.ai_analysis import AIAnalysisSchema, RequirementSchema, RiskSchema
+from app.services.ai.intelligence import DocumentAnalysisResult
+>>>>>>> 81fe21d (feat: complete backend/frontend platform implementation, root .gitignore, and updated README)
 from app.services.document.document_processing_service import document_processing_service
 
 # Use in-memory SQLite database for testing
@@ -59,6 +64,7 @@ def test_document_processing_pipeline() -> None:
         db.commit()
         db.refresh(rfp)
 
+<<<<<<< HEAD
         # 3. Mock the Gemini response
         mock_gemini_json = """{
             "executive_summary": "The City of Riverdale is migrating its legacy core banking to secure cloud workflows.",
@@ -79,16 +85,52 @@ def test_document_processing_pipeline() -> None:
         mock_response.text = mock_gemini_json
         
         # 4. Patch GeminiClient.generate and extract_text
+=======
+        # 3. Build a typed mock DocumentAnalysisResult — bypasses provider selection,
+        #    embeddings, and Qdrant so the test runs fully offline.
+        mock_analysis_schema = AIAnalysisSchema(
+            executive_summary="The City of Riverdale is migrating its legacy core banking to secure cloud workflows.",
+            submission_deadline="August 30, 2026",
+            budget="$500,000",
+            opportunity_summary="Core government infrastructure migration.",
+            overall_risk="Medium",
+            requirements=[
+                RequirementSchema(category="Mandatory", priority="High", requirement="ISO 27001 certification required."),
+                RequirementSchema(category="Technical", priority="Medium", requirement="Migrate 3 core databases to AWS."),
+            ],
+            risks=[RiskSchema(severity="High", description="Unreasonable project delivery timeline.")],
+        )
+        mock_analysis_result = DocumentAnalysisResult(
+            analysis=mock_analysis_schema,
+            provider="gemini",
+            model="gemini-2.5-flash",
+            used_fallback=False,
+            confidence_score=0.95,
+            retrieval_hits=[],
+            raw_response={},
+        )
+
+        # 4. Patch extract_text and the entire AI analysis call
+>>>>>>> 81fe21d (feat: complete backend/frontend platform implementation, root .gitignore, and updated README)
         mock_extraction = MagicMock()
         mock_extraction.filename = "test_rfp_doc.docx"
         mock_extraction.file_type = "docx"
         mock_extraction.page_count = 0
         mock_extraction.full_text = "This is a dummy RFP document for BidWise AI testing."
 
+<<<<<<< HEAD
         with patch("app.services.ai.client.gemini_client.generate", return_value=mock_response), \
              patch("app.services.document.document_processing_service.extract_text", return_value=mock_extraction):
             # Run the process service
             document_processing_service.process(db, rfp.id)
+=======
+        with patch("app.services.document.document_processing_service.extract_text", return_value=mock_extraction), \
+             patch("app.services.document.document_processing_service.document_intelligence_service.analyze",
+                   return_value=mock_analysis_result):
+            # Run the process service
+            document_processing_service.process(db, rfp.id)
+
+>>>>>>> 81fe21d (feat: complete backend/frontend platform implementation, root .gitignore, and updated README)
             
         # 5. Verify Database updates
         db.refresh(rfp)

@@ -46,6 +46,16 @@ class Requirement(Base):
         nullable=True,
     )
 
+<<<<<<< HEAD
+=======
+    status: Mapped[str] = mapped_column(
+        String(50),
+        nullable=False,
+        default="Verified Compliant",
+        server_default="Verified Compliant",
+    )
+
+>>>>>>> 81fe21d (feat: complete backend/frontend platform implementation, root .gitignore, and updated README)
     analysis = relationship(
         "Analysis",
         back_populates="requirements",

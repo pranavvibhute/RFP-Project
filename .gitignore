@@ -1,0 +1,56 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Pytest / Coverage / Cache
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# Virtual Environments
+venv/
+venv*/
+env/
+env*/
+ENV/
+backend/venv/
+
+# Environment Variables & Secrets
+.env
+.env.*
+!.env.example
+backend/.env
+frontend/.env
+*.env
+
+# Databases & SQLite
+*.db
+*.sqlite
+*.sqlite3
+rfp_database.db
+backend/rfp_database.db
+
+# Node / Frontend / Next.js
+node_modules/
+backend/node_modules/
+frontend/node_modules/
+.next/
+frontend/.next/
+out/
+frontend/out/
+
+# Uploads & Generated files
+backend/uploads/*
+!backend/uploads/.gitkeep
+backend/reports/*
+!backend/reports/.gitkeep
+
+# OS / IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db

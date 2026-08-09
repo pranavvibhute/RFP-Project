@@ -1,188 +1,300 @@
-# BidWise AI — RFP Analysis Service
+# BidWise AI — Enterprise RFP Analysis & Proposal Intelligence Platform
 
-BidWise AI is a high-performance analysis service designed to streamline the RFP (Request for Proposal), RFQ, and Tender review process for Bid Managers. It extracts clean, structured text from documents, identifies critical requirements and evaluation criteria, maps out deadlines, flags key risks, and presents them in a beautiful web dashboard.
+[![Python](https://img.shields.io/badge/Python-3.12-blue.svg)](https://www.python.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.139-green.svg)](https://fastapi.tiangolo.com/)
+[![Next.js](https://img.shields.io/badge/Next.js-16.2-black.svg)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React-19.2-61dafb.svg)](https://react.dev/)
+[![Qdrant](https://img.shields.io/badge/Qdrant-Vector%20DB-red.svg)](https://qdrant.tech/)
+[![Google Gemini](https://img.shields.io/badge/Google%20Gemini-2.5%20Flash-orange.svg)](https://aistudio.google.com/)
 
----
-
-## Features Completed
-1. **Multi-format Extraction (F1)**: Handles `.pdf` (retaining page markers using `PyMuPDF`) and `.docx` (retaining paragraphs and tables using `python-docx`).
-2. **Gemini 2.5 Analysis (F2)**: Uses the Gemini 2.5 Flash model with custom JSON schema structures to generate a clean, validation-safe executive summary.
-3. **Interactive Web Dashboard**: A modern, single-page client interface built with vanilla CSS glassmorphism, drag-and-drop file upload, real-time simulated progress states, and tabbed result visualization.
-
----
-
-## Installation & Setup
-
-### Prerequisites
-- Python 3.12
-- A Google Gemini API Key (obtainable from [Google AI Studio](https://aistudio.google.com/))
-
-### 1. Clone & Navigate to Project
-Open your terminal (PowerShell, Command Prompt, or Bash) and navigate to the project directory:
-```bash
-cd D:\Coding\AI_Business\RFP-Project
-```
-
-### 2. Set Up a Virtual Environment
-Create and activate a Python virtual environment to manage dependencies cleanly:
-
-**On Windows (PowerShell):**
-```powershell
-python -m venv venv
-.\venv\Scripts\Activate.ps1
-```
-
-**On macOS/Linux:**
-```bash
-python3 -m venv venv
-source venv/bin/activate
-```
-
-### 3. Install Dependencies
-Install all required libraries specified in `requirements.txt`:
-```bash
-pip install -r requirements.txt
-```
-
-The service relies on the following key packages:
-- `fastapi` & `uvicorn[standard]` - High-performance web framework and server
-- `python-multipart` - Form-data file uploads support
-- `pymupdf` - PDF text and page parsing
-- `python-docx` - DOCX text and table parsing
-- `google-genai` - Official Google GenAI SDK
-- `python-dotenv` - Environment configuration
-
-### 4. Configure Environment Variables
-Copy `.env.example` to `.env` and fill in your Gemini API Key:
-
-```ini
-# .env file
-GEMINI_API_KEY=your_actual_gemini_api_key_here
-GEMINI_MODEL=gemini-2.5-flash
-```
+**BidWise AI** is an enterprise-grade AI-powered Request for Proposal (RFP), RFQ, and Tender analysis platform. Built for Bid Managers, Proposal Leads, and Solution Architects, BidWise AI automatically ingests complex bid documents, extracts structured data, identifies key requirements and evaluation criteria, evaluates risk factors, and leverages Retrieval-Augmented Generation (RAG) vector search to accelerate proposal response workflows.
 
 ---
 
-## Running the Application
+## 🌟 Key Features
 
-Start the FastAPI local development server using `uvicorn`:
-```bash
-uvicorn app.main:app --reload --port 8000
-```
+### 📄 Multi-Format Document Ingestion & Parsing
+- **PDF Extraction (`PyMuPDF`)**: Pages are parsed with explicit page markers (e.g., `--- Page N ---`), enabling precise citation mapping back to original source documents.
+- **DOCX Extraction (`python-docx`)**: Extracts structured paragraph text and tabular content, preserving grid structures by converting table cells into delimited format.
+- **Large Document Processing**: Handles large documents up to 25MB with chunking and token safety limits.
 
-Once running:
-- **Web UI Dashboard**: Access [http://127.0.0.1:8000/](http://127.0.0.1:8000/) in your web browser.
-- **Interactive Swagger Docs**: Go to [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs) to test API endpoints directly.
-- **Service Health Check**: Endpoint at [http://127.0.0.1:8000/health](http://127.0.0.1:8000/health).
+### 🤖 Dual-Engine AI & RAG Intelligence
+- **Google Gemini 2.5 Flash Integration**: Rapid structured JSON extraction with validated schemas for executive summaries, requirement lists, deadlines, and risk factors.
+- **Qwen / OpenRouter Support**: Secondary LLM integration with automatic confidence-scoring failover fallback.
+- **Vector Search RAG Pipeline**: Built-in text chunking (1400 chars, 200 overlap), `BAAI/bge-large-en-v1.5` embeddings, and high-performance vector retrieval via **Qdrant**.
+- **Q&A Context Engine**: Question answering grounded in uploaded RFP document chunks.
+
+### 📊 Modern Next.js 16 Executive Dashboard
+- **Analytics & Revenue Metrics**: Tracks active RFPs, win/loss conversion rates, total revenue bookings, and compliance review session stats.
+- **Drag-and-Drop Analysis Portal**: Upload documents directly with step-by-step progress tracking (extraction -> chunking -> vector indexing -> AI evaluation).
+- **Tabbed Interactive Results**: View project overview, key requirements table, deadline timeline, evaluation criteria percentages, and color-coded risk alerts.
+- **Raw JSON Export**: Copy or download schema-validated analysis outputs.
+
+### 📋 Requirements & Risk Management
+- **Requirement Extraction**: Automatically flags mandatory vs. optional technical, security, and operational requirements.
+- **Risk Severity Engine**: Highlights firm submission deadlines, SLA penalties, missing compliance certifications, and scope ambiguities.
+- **Compliance Matrix**: Track requirement fulfillment status across teams.
+
+### 🏢 Organization & Multi-Tenant Management
+- **Customer Directory**: Manage client accounts, organizational profiles, and historical RFPs.
+- **Settings & Model Switcher**: Live dynamic configuration of primary/fallback AI providers, API keys, confidence thresholds, and vector store parameters.
 
 ---
 
-## Code Architecture & Components
+## 🏗️ Architecture & Tech Stack
+
+```
+                                  ┌────────────────────────┐
+                                  │   Next.js 16 Frontend  │
+                                  │ (TypeScript, Tailwind) │
+                                  └───────────┬────────────┘
+                                              │ REST API
+                                              ▼
+                                  ┌────────────────────────┐
+                                  │   FastAPI Backend Gateway │
+                                  └───────────┬────────────┘
+                                              │
+               ┌──────────────────────────────┼──────────────────────────────┐
+               ▼                              ▼                              ▼
+    ┌────────────────────┐        ┌────────────────────┐        ┌────────────────────┐
+    │ Document Engine    │        │  AI Intelligence   │        │ Data Storage Layer │
+    │ (PyMuPDF, docx)    │        │ (Gemini 2.5, Qwen) │        │ (SQLAlchemy, DB)   │
+    └────────────────────┘        └───────────┬────────┘        └────────────────────┘
+                                              │ Embeddings & RAG
+                                              ▼
+                                  ┌────────────────────────┐
+                                  │  Qdrant Vector Engine  │
+                                  └────────────────────────┘
+```
+
+| Component | Stack / Technologies |
+| :--- | :--- |
+| **Frontend UI** | Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS v4, Lucide React, Recharts |
+| **Backend Framework** | Python 3.12, FastAPI 0.139, Uvicorn, Pydantic v2, Pydantic Settings |
+| **Database & ORM** | SQLAlchemy 2.0, Alembic (Database Migrations), PostgreSQL / SQLite |
+| **AI Models & SDKs** | Google GenAI SDK (`google-genai`), OpenRouter (Qwen-3 Instruct), HuggingFace (`BAAI/bge-large-en-v1.5`) |
+| **Vector Store** | Qdrant (`qdrant-client`), Docker Compose |
+| **Document Processing** | PyMuPDF (`fitz`), `python-docx`, `lxml` |
+| **Testing & Quality** | `pytest`, custom evaluation scripts |
+
+---
+
+## 📁 Workspace Directory Structure
 
 ```
 RFP-Project/
-├── app/
-│   ├── __init__.py
-│   ├── extractor.py    # Document text extraction layer (PDF/DOCX)
-│   ├── index.html      # Glassmorphic single-page web interface
-│   ├── main.py         # FastAPI routes, middlewares, and startup
-│   └── summarizer.py   # Gemini API integration and custom schema matching
-├── .env                # Local secrets configuration (ignored in git)
-├── requirements.txt    # Dependency definitions
-├── sample_rfp.docx     # Test document (DOCX format)
-└── sample_rfp.pdf      # Test document (PDF format)
+├── docker-compose.yml           # Local Qdrant Vector Database service definition
+├── README.md                    # Project documentation
+│
+├── backend/                     # FastAPI Backend Core
+│   ├── alembic/                 # Database schema migration scripts
+│   ├── app/
+│   │   ├── api/v1/              # Versioned API REST Routers
+│   │   │   ├── analysis.py      # Document upload, extraction & RAG endpoints
+│   │   │   ├── auth.py          # User authentication endpoints
+│   │   │   ├── customers.py     # Organization & client management
+│   │   │   ├── health.py        # System status & diagnostic checks
+│   │   │   ├── reports.py       # Analytics, compliance & revenue reports
+│   │   │   ├── requirements.py  # Extracted RFP requirement endpoints
+│   │   │   ├── rfps.py          # RFP document CRUD & lifecycle status
+│   │   │   └── settings.py      # AI provider & vector config updates
+│   │   │
+│   │   ├── core/                # Configuration settings & logging setup
+│   │   ├── database/            # SQLAlchemy session & base models
+│   │   ├── models/              # Database models (RFP, Requirement, Org, User)
+│   │   ├── repositories/        # Database access repository pattern
+│   │   ├── schemas/             # Pydantic validation schemas
+│   │   ├── services/            # Core business logic
+│   │   │   ├── ai/              # Gemini, Qwen, RAG chunking & vector store
+│   │   │   ├── document/        # PDF & DOCX text extraction
+│   │   │   └── rfp/             # RFP processing workflows
+│   │   └── index.html           # Embedded single-page HTML fallback UI
+│   │
+│   ├── scripts/                 # Utility & intelligence evaluation scripts
+│   │   ├── evaluate_intelligence.py # AI extraction accuracy benchmark
+│   │   ├── insert_aicte_rfp.py       # Test data loader
+│   │   └── seed.py                   # Initial database seeder
+│   │
+│   ├── tests/                   # Pytest automated test suites
+│   ├── requirements.txt         # Python dependency definitions
+│   └── .env.example             # Environment variable template
+│
+└── frontend/                    # Next.js 16 Modern Web Interface
+    ├── prisma/                  # Prisma schema definitions
+    ├── public/                  # Static assets & public icons
+    └── src/
+        ├── app/                 # Next.js App Router Pages
+        │   ├── dashboard/       # Executive analytics dashboard
+        │   ├── upload/          # Document upload & real-time analysis
+        │   ├── rfps/            # RFP document repository & detail views
+        │   ├── requirements/    # Interactive requirement matrix tracker
+        │   ├── risks/           # Risk assessment portal
+        │   ├── reports/         # Executive reporting center
+        │   ├── customers/       # Organization & client directory
+        │   ├── settings/        # AI & Vector DB settings panel
+        │   ├── login/           # Authentication login
+        │   └── register/        # User registration
+        │
+        └── components/          # UI Components
+            ├── dashboard/       # Revenue, Win-rate & Session charts
+            ├── chat/            # RAG Q&A Assistant interface
+            ├── layout/          # Navigation sidebar & header
+            └── ui/              # Reusable UI primitives
 ```
-
-### 1. Document Extraction (`app/extractor.py`)
-- Dispatches parsing based on file extension.
-- **PDF Extraction**: Uses `PyMuPDF` (`fitz`) to extract text page-by-page. Formats output with page markers (e.g., `--- Page 1 ---`) to allow Gemini to contextualize references.
-- **DOCX Extraction**: Uses `python-docx` to iterate through paragraphs and extract tabular grid content, joining cells with a pipe character (`|`) to maintain structure.
-- Cleans and normalizes whitespace runs while preserving paragraph spacing.
-
-### 2. Executive Summary Engine (`app/summarizer.py`)
-- Defines the `ExecutiveSummary` structure.
-- **Gemini API Integration**: Implements the official `google-genai` SDK Client.
-- **Custom Schema Workaround**: Nested Pydantic schemas in Pydantic v2 serialize with `$defs` and `$ref` keywords, which are rejected by the Gemini API schema validator. To solve this, a flat, explicit schema dictionary is defined and passed to `response_schema` in the SDK, ensuring stable structured JSON responses:
-  ```python
-  EXECUTIVE_SUMMARY_SCHEMA = {
-      "type": "OBJECT",
-      "properties": {
-          "project_overview": {"type": "STRING", "description": "..."},
-          "key_requirements": {"type": "ARRAY", "items": {"type": "STRING"}},
-          "deadlines": {
-              "type": "ARRAY",
-              "items": {
-                  "type": "OBJECT",
-                  "properties": {
-                      "label": {"type": "STRING"},
-                      "date_or_detail": {"type": "STRING"}
-                  },
-                  "required": ["label", "date_or_detail"]
-              }
-          },
-          # ... other fields
-      }
-  }
-  ```
-
-### 3. FastAPI Server Gateway (`app/main.py`)
-- Configures CORS permissions to allow connection from external frontends.
-- Defines `/health` check.
-- Serve the interactive HTML dashboard on the `/` route dynamically.
-- Implements `/analyze` (POST) which reads file bytes, enforces a 25MB safety limit, processes text extraction, calls the Gemini Summarizer, and returns structured metadata + analysis results.
-
-### 4. Interactive Dashboard (`app/index.html`)
-- **Aesthetic**: Premium dark gradient background with glassmorphism layout containers.
-- **Upload**: Interactive drag-and-drop or file selector with instant feedback.
-- **Loading Indicators**: Multi-phase loading status messages simulating progress through the analysis steps.
-- **Result Panels**: Tabbed navigation between:
-  - **Dashboard View**: Clean structured cards displaying project metadata, Project Overview, Key Requirements with icons, Evaluation Criteria, Critical Deadlines table, and a dedicated, warn-colored alert section for Important Risks.
-  - **Raw JSON**: High-fidelity JSON view with a copy-to-clipboard function.
 
 ---
 
-## Local Verification & Testing
+## ⚡ Quick Start & Installation Guide
 
-### Test Option A: Web Interface (Recommended)
-1. Open [http://127.0.0.1:8000/](http://127.0.0.1:8000/) in your browser.
-2. Drag and drop the `sample_rfp.docx` or `sample_rfp.pdf` file into the upload zone (or click to browse).
-3. Watch the progress animation load the analysis.
-4. Interact with the Dashboard View tabs and copy the raw JSON as needed.
+### Prerequisites
+- **Python**: `v3.12` or higher
+- **Node.js**: `v18.0.0` or higher (with `npm`)
+- **Docker**: Docker Desktop installed and running (for Qdrant Vector Store)
+- **API Key**: Google Gemini API key ([Google AI Studio](https://aistudio.google.com/))
 
-### Test Option B: CLI Curl Command
-You can test the endpoint directly using `curl` from a terminal window:
+---
+
+### Step 1: Start Vector Database (Qdrant)
+Run Qdrant using Docker Compose from the root directory:
 
 ```bash
-# Test using the sample DOCX file
-curl -F "file=@sample_rfp.docx" http://127.0.0.1:8000/analyze
+docker-compose up -d
+```
+*Qdrant will start on port `6333`.*
+
+---
+
+### Step 2: Set Up & Launch Backend Service
+
+1. **Navigate to backend directory**:
+   ```bash
+   cd backend
+   ```
+
+2. **Create and activate virtual environment**:
+   - **Windows (PowerShell)**:
+     ```powershell
+     python -m venv venv
+     .\venv\Scripts\Activate.ps1
+     ```
+   - **macOS / Linux**:
+     ```bash
+     python3 -m venv venv
+     source venv/bin/activate
+     ```
+
+3. **Install dependencies**:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. **Configure Environment Variables**:
+   Create a `.env` file inside `backend/` (or copy `.env.example`):
+   ```env
+   APP_NAME="BidWise AI"
+   APP_VERSION="1.0.0"
+   DEBUG=True
+
+   # Database (PostgreSQL or local SQLite fallback)
+   DATABASE_URL="sqlite:///./rfp_database.db"
+
+   # AI LLM Provider Configuration
+   GEMINI_API_KEY="your_actual_gemini_api_key_here"
+   GEMINI_MODEL="gemini-2.5-flash"
+
+   # Secondary / Fallback Provider (Optional: OpenRouter Qwen)
+   AI_PRIMARY_PROVIDER="qwen"
+   AI_FALLBACK_PROVIDER="gemini"
+   QWEN_BASE_URL="https://openrouter.ai/api/v1"
+   QWEN_API_KEY="your_openrouter_api_key"
+   QWEN_MODEL="openrouter/free"
+
+   # Qdrant Vector DB Configuration
+   QDRANT_URL="http://localhost:6333"
+   QDRANT_COLLECTION="bidwise_rfp_chunks"
+   ```
+
+5. **Seed Initial Data (Optional)**:
+   ```bash
+   python scripts/seed.py
+   ```
+
+6. **Start the FastAPI Backend Server**:
+   ```bash
+   uvicorn app.main:app --reload --port 8000
+   ```
+   - **Backend API Base**: `http://127.0.0.1:8000/`
+   - **Interactive OpenAPI Docs**: `http://127.0.0.1:8000/docs`
+   - **Health Check**: `http://127.0.0.1:8000/api/v1/health`
+
+---
+
+### Step 3: Set Up & Launch Frontend Client
+
+1. **Open a new terminal and navigate to frontend directory**:
+   ```bash
+   cd frontend
+   ```
+
+2. **Install Node modules**:
+   ```bash
+   npm install
+   ```
+
+3. **Start Next.js development server**:
+   ```bash
+   npm run dev
+   ```
+   - **Web UI Dashboard**: Access [http://localhost:3000](http://localhost:3000) in your browser.
+
+---
+
+## 📡 API Reference Overview
+
+The FastAPI backend exposes the following primary endpoints under `/api/v1`:
+
+| Category | Endpoint | Method | Description |
+| :--- | :--- | :--- | :--- |
+| **System** | `/health` | `GET` | Service status, database connectivity, and uptime check |
+| **Analysis** | `/api/v1/analysis/upload` | `POST` | Ingests `.pdf`/`.docx`, extracts text, chunks vector index, & runs AI analysis |
+| **RFP Management** | `/api/v1/rfps` | `GET` | Lists all processed RFPs with filters and status |
+| **RFP Detail** | `/api/v1/rfps/{id}` | `GET` | Fetches full RFP details, requirements, risks, and timeline |
+| **RFP Status** | `/api/v1/rfps/{id}/status`| `PATCH` | Updates RFP pipeline stage (`draft`, `under_review`, `submitted`, `won`, `lost`) |
+| **Requirements**| `/api/v1/requirements` | `GET` | Retrieves extracted requirements matrix with category filters |
+| **Reports** | `/api/v1/reports/summary` | `GET` | Aggregated dashboard stats (win rates, revenue, session counts) |
+| **Customers** | `/api/v1/customers` | `GET` / `POST` | Manage enterprise customer accounts & profiles |
+| **Settings** | `/api/v1/settings/ai` | `GET` / `POST` | Retrieve or update LLM models, API keys & vector search thresholds |
+| **Auth** | `/api/v1/auth/login` | `POST` | Authenticate user credentials and return access token |
+
+---
+
+## 🧪 Testing & Verification
+
+### Running Automated Unit & Integration Tests
+Run pytest from within the `backend/` directory:
+
+```bash
+cd backend
+pytest -v
 ```
 
-**Example Successful Output:**
-```json
-{
-  "filename": "sample_rfp.docx",
-  "file_type": "docx",
-  "page_count": 0,
-  "char_count": 1117,
-  "processing_time_seconds": 4.01,
-  "executive_summary": {
-    "project_overview": "The City of Riverdale is seeking a qualified vendor to migrate its legacy on-premise data center to a secure, scalable cloud infrastructure...",
-    "key_requirements": [
-      "Vendor must hold ISO 27001 certification",
-      "Minimum 5 years experience with government cloud migrations",
-      "24/7 support SLA with 1-hour critical response time"
-    ],
-    "deadlines": [
-      { "label": "Proposal Submission Deadline", "date_or_detail": "July 20, 2026" }
-    ],
-    "evaluation_criteria": [
-      "Technical approach: 40%",
-      "Cost: 30%"
-    ],
-    "important_risks": [
-      "Submission deadline is firm with no extensions."
-    ],
-    "issuing_organization": "City of Riverdale Municipal Corporation"
-  }
-}
+### Running AI Intelligence Evaluation
+Assess the document extraction and AI summarization quality:
+
+```bash
+cd backend
+python scripts/evaluate_intelligence.py
 ```
+
+### Direct CLI Verification via cURL
+Test document analysis directly against the API:
+
+```bash
+curl -F "file=@sample_rfp.docx" http://127.0.0.1:8000/api/v1/analysis/upload
+```
+
+---
+
+## 🛡️ License
+
+This project is proprietary software created for enterprise RFP analysis. All rights reserved.
