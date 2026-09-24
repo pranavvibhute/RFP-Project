@@ -8,14 +8,11 @@ from app.core.logging import setup_logging, get_logger
 from app.api.v1.health import router as health_router
 from app.api.v1.analysis import router as analysis_router
 from app.api.v1.rfps import router as rfp_router
-<<<<<<< HEAD
-=======
 from app.api.v1.requirements import router as requirements_router
 from app.api.v1.reports import router as reports_router
 from app.api.v1.customers import router as customers_router
 from app.api.v1.settings import router as settings_router
 from app.api.v1.auth import router as auth_router
->>>>>>> 81fe21d (feat: complete backend/frontend platform implementation, root .gitignore, and updated README)
 
 # Initialize application logging
 setup_logging()
@@ -39,14 +36,11 @@ app.add_middleware(
 app.include_router(health_router, prefix="/api/v1", tags=["Health"])
 app.include_router(analysis_router, prefix="/api/v1", tags=["Analysis"])
 app.include_router(rfp_router, prefix="/api/v1")
-<<<<<<< HEAD
-=======
 app.include_router(requirements_router, prefix="/api/v1")
 app.include_router(reports_router, prefix="/api/v1")
 app.include_router(customers_router, prefix="/api/v1")
 app.include_router(settings_router, prefix="/api/v1")
 app.include_router(auth_router, prefix="/api/v1")
->>>>>>> 81fe21d (feat: complete backend/frontend platform implementation, root .gitignore, and updated README)
 
 # Register backward compatible root routes for the static dashboard & simple tests
 app.include_router(health_router, tags=["Root Health"])

@@ -6,18 +6,6 @@ from app.database.session import get_db
 router = APIRouter()
 
 @router.get("/health")
-<<<<<<< HEAD
-def health() -> dict:
-    """Simple API health check endpoint."""
-    return {"status": "ok", "service": "bidwise-analysis"}
-
-@router.get("/health/db")
-def database_health(db: Session = Depends(get_db)):
-    db.execute(text("SELECT 1"))
-
-    return {
-        "database": "connected"
-=======
 def health(db: Session = Depends(get_db)) -> dict:
     """Live API and infrastructure health check endpoint."""
     # Check DB
@@ -45,5 +33,4 @@ def health(db: Session = Depends(get_db)) -> dict:
             "qdrant_store": qdrant_status,
             "version": getattr(settings, "APP_VERSION", "0.2.0")
         }
->>>>>>> 81fe21d (feat: complete backend/frontend platform implementation, root .gitignore, and updated README)
     }

@@ -135,53 +135,25 @@ ANALYSIS_RESPONSE_SCHEMA = {
                 },
                 "required": ["severity", "description"]
             }
-<<<<<<< HEAD
-=======
         },
         "evaluation_criteria": {
             "type": "ARRAY",
-            "items": {"type": "STRING"},
-            "description": "How the issuer says they will evaluate bids"
+            "items": {"type": "STRING"}
         },
         "important_risks": {
             "type": "ARRAY",
-            "items": {"type": "STRING"},
-            "description": "Plain-language summary of the biggest bid risks"
+            "items": {"type": "STRING"}
         },
-        "issuing_organization": {
-            "type": "STRING",
-            "description": "Name of the customer/organization issuing this RFP, if identifiable"
-        },
-        "bid_recommendation": {
-            "type": "STRING",
-            "description": "Decision recommendation: 'Go' (Bid), 'No-Go' (No-bid), or 'Review Required'"
-        },
-        "recommendation_rationale": {
-            "type": "STRING",
-            "description": "2-3 sentence strategic rationale explaining the recommendation based on budget, risk, and timelines"
->>>>>>> 81fe21d (feat: complete backend/frontend platform implementation, root .gitignore, and updated README)
-        }
+        "issuing_organization": {"type": "STRING"},
+        "bid_recommendation": {"type": "STRING"},
+        "recommendation_rationale": {"type": "STRING"}
     },
     "required": [
         "executive_summary",
         "opportunity_summary",
         "overall_risk",
         "requirements",
-<<<<<<< HEAD
         "risks"
-    ]
-}
-
-ANALYSIS_PROMPT = """Analyze the following RFP document. Extract the executive summary, submission deadline, budget, opportunity summary, overall risk level, key requirements, and risks.
-
---- DOCUMENT START ---
-{{document}}
-=======
-        "risks",
-        "evaluation_criteria",
-        "important_risks",
-        "bid_recommendation",
-        "recommendation_rationale"
     ]
 }
 
@@ -189,7 +161,6 @@ ANALYSIS_PROMPT = """Analyze the following RFP document. Extract the executive s
 
 --- DOCUMENT START ---
 {document}
->>>>>>> 81fe21d (feat: complete backend/frontend platform implementation, root .gitignore, and updated README)
 --- DOCUMENT END ---
 
 Produce the analysis now, as JSON matching the schema."""

@@ -7,21 +7,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from app.database.session import SessionLocal
 from app.models.organization import Organization
 from app.models.user_profile import UserProfile
-<<<<<<< HEAD
-=======
-from app.models.rfp import RFP
-from app.models.analysis import Analysis
-from app.models.requirement import Requirement
->>>>>>> 81fe21d (feat: complete backend/frontend platform implementation, root .gitignore, and updated README)
-
-db = SessionLocal()
-
-try:
-<<<<<<< HEAD
-    # Create Organization
-=======
-    # 1. Create Organization
->>>>>>> 81fe21d (feat: complete backend/frontend platform implementation, root .gitignore, and updated README)
+# 1. Create Organization
     org = db.query(Organization).filter(Organization.name == "BidWise AI").first()
     if not org:
         org = Organization(
@@ -36,37 +22,18 @@ try:
     else:
         print("Organization already exists.")
 
-<<<<<<< HEAD
-    # Create User
-=======
-    # 2. Create User Profile
->>>>>>> 81fe21d (feat: complete backend/frontend platform implementation, root .gitignore, and updated README)
+# 2. Create User Profile
     user = db.query(UserProfile).filter(UserProfile.auth_user_id == "seed_user_pranav").first()
     if not user:
         user = UserProfile(
             organization_id=org.id,
             auth_user_id="seed_user_pranav",
-<<<<<<< HEAD
-            full_name="Pranav",
-=======
-            full_name="Kate Russell",
->>>>>>> 81fe21d (feat: complete backend/frontend platform implementation, root .gitignore, and updated README)
+full_name="Kate Russell",
             role="Admin"
         )
         db.add(user)
         db.commit()
-<<<<<<< HEAD
-=======
-        db.refresh(user)
->>>>>>> 81fe21d (feat: complete backend/frontend platform implementation, root .gitignore, and updated README)
-        print("User created.")
-    else:
-        print("User already exists.")
-
-<<<<<<< HEAD
-    print("Seed completed successfully!")
-=======
-    # 3. Seed Sample RFPs & Analysis if none exist
+# 3. Seed Sample RFPs & Analysis if none exist
     if db.query(RFP).count() == 0:
         rfp1 = RFP(
             organization_id=org.id,
@@ -140,7 +107,6 @@ try:
         print("RFPs already exist in DB.")
 
     print("Seed process complete.")
->>>>>>> 81fe21d (feat: complete backend/frontend platform implementation, root .gitignore, and updated README)
 
 finally:
     db.close()

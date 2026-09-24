@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-# Placeholder for authentication router
-=======
 import uuid
 import hashlib
 from typing import Any
@@ -97,4 +94,3 @@ def login_user(payload: LoginPayload, db: Session = Depends(get_db)) -> dict[str
             "role": profile.role
         }
     }
->>>>>>> 81fe21d (feat: complete backend/frontend platform implementation, root .gitignore, and updated README)

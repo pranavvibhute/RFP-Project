@@ -1,13 +1,6 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from app.core.config import settings
-<<<<<<< HEAD
-
-engine = create_engine(
-    settings.DATABASE_URL,
-    echo=settings.DEBUG,
-)
-=======
 from app.database.base import Base
 # Import all models so Base.metadata knows about them
 import app.models  # noqa
@@ -38,7 +31,6 @@ except Exception as e:
 
 # Automatically ensure database tables exist
 Base.metadata.create_all(bind=engine)
->>>>>>> 81fe21d (feat: complete backend/frontend platform implementation, root .gitignore, and updated README)
 
 SessionLocal = sessionmaker(
     bind=engine,
@@ -50,9 +42,6 @@ def get_db():
     db = SessionLocal()
     try:
         yield db
-<<<<<<< HEAD
 
-=======
->>>>>>> 81fe21d (feat: complete backend/frontend platform implementation, root .gitignore, and updated README)
     finally:
         db.close()

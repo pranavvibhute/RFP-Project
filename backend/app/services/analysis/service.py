@@ -1,16 +1,9 @@
 import time
 
-<<<<<<< HEAD
-from app.services.document.extractor import extract_text
-from app.services.ai.gemini import generate_executive_summary
-from app.schemas.analysis import AnalyzeResponse
-from app.core.logging import get_logger
-=======
 from app.core.logging import get_logger
 from app.schemas.analysis import AnalyzeResponse, ExecutiveSummary, Deadline
 from app.services.ai.intelligence import document_intelligence_service
 from app.services.document.extractor import extract_text
->>>>>>> 81fe21d (feat: complete backend/frontend platform implementation, root .gitignore, and updated README)
 
 logger = get_logger("services.analysis")
 
@@ -32,11 +25,7 @@ class AnalysisService:
             extraction.page_count,
         )
 
-<<<<<<< HEAD
-        # Step 2: Summarization via Gemini AI
-        summary = generate_executive_summary(extraction.full_text, filename=extraction.filename)
-=======
-        # Step 2: Retrieval-assisted AI analysis with Qwen primary and Gemini fallback
+# Step 2: Retrieval-assisted AI analysis with Qwen primary and Gemini fallback
         result = document_intelligence_service.analyze(extraction.full_text, filename=extraction.filename)
 
         summary = ExecutiveSummary(
@@ -52,7 +41,6 @@ class AnalysisService:
             or [risk.description for risk in result.analysis.risks],
             issuing_organization=result.analysis.issuing_organization,
         )
->>>>>>> 81fe21d (feat: complete backend/frontend platform implementation, root .gitignore, and updated README)
 
         elapsed = time.monotonic() - start
         logger.info("Completed analysis of %s in %.2fs", extraction.filename, elapsed)

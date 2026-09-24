@@ -15,3 +15,10 @@ class RFPRepository(BaseRepository[RFP]):
             .filter(RFP.status == status)
             .all()
         )
+
+    def get_by_organization(self, organization_id: int):
+        return (
+            self.db.query(RFP)
+            .filter(RFP.organization_id == organization_id)
+            .all()
+        )

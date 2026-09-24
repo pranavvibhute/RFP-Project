@@ -11,8 +11,6 @@ class Settings(BaseSettings):
     GEMINI_API_KEY: str
     GEMINI_MODEL: str
 
-<<<<<<< HEAD
-=======
     AI_PRIMARY_PROVIDER: str = "qwen"
     AI_FALLBACK_PROVIDER: str = "gemini"
 
@@ -34,8 +32,6 @@ class Settings(BaseSettings):
 
     AI_FALLBACK_CONFIDENCE_THRESHOLD: float = 0.72
     AI_MAX_PROMPT_CHARS: int = 200000
-
->>>>>>> 81fe21d (feat: complete backend/frontend platform implementation, root .gitignore, and updated README)
     model_config = SettingsConfigDict(
         env_file=".env",
         extra="ignore"

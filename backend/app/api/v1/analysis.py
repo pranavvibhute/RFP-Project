@@ -1,21 +1,14 @@
-<<<<<<< HEAD
-from fastapi import APIRouter, File, HTTPException, UploadFile
-=======
 from typing import Any
 from fastapi import APIRouter, File, HTTPException, UploadFile, Depends
 from sqlalchemy.orm import Session
->>>>>>> 81fe21d (feat: complete backend/frontend platform implementation, root .gitignore, and updated README)
 
 from app.core.config import settings
 from app.core.exceptions import EmptyDocumentError, SummarizationError, UnsupportedFileTypeError
 from app.core.logging import get_logger
 from app.schemas.analysis import AnalyzeResponse
 from app.services.analysis.service import analysis_service
-<<<<<<< HEAD
-=======
 from app.database.session import get_db
 from app.models.analysis import Analysis
->>>>>>> 81fe21d (feat: complete backend/frontend platform implementation, root .gitignore, and updated README)
 
 logger = get_logger("api.v1.analysis")
 router = APIRouter()
@@ -55,8 +48,6 @@ async def analyze_rfp(file: UploadFile = File(...)) -> AnalyzeResponse:
         logger.error("Analysis execution failed for %s: %s", file.filename, e)
         raise HTTPException(status_code=502, detail=f"AI summarization failed: {e}") from e
 
-<<<<<<< HEAD
-=======
 
 @router.get("/risks")
 def list_risks(db: Session = Depends(get_db)) -> list[dict[str, Any]]:
@@ -134,5 +125,3 @@ def get_analysis_metrics(db: Session = Depends(get_db)) -> dict[str, Any]:
             "sync_time": "3.8s",
         }
     }
-
->>>>>>> 81fe21d (feat: complete backend/frontend platform implementation, root .gitignore, and updated README)
