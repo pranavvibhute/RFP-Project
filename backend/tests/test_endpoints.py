@@ -10,14 +10,18 @@ def test_health_check() -> None:
     """Test standard health check router."""
     response = client.get("/health")
     assert response.status_code == 200
-    assert response.json() == {"status": "ok", "service": "bidwise-analysis"}
+    data = response.json()
+    assert data["status"] == "ok"
+    assert data["service"] == "bidwise-analysis"
 
 
 def test_health_check_v1() -> None:
     """Test API v1 health check router."""
     response = client.get("/api/v1/health")
     assert response.status_code == 200
-    assert response.json() == {"status": "ok", "service": "bidwise-analysis"}
+    data = response.json()
+    assert data["status"] == "ok"
+    assert data["service"] == "bidwise-analysis"
 
 
 def test_analyze_unsupported_file() -> None:

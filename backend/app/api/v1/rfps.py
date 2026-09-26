@@ -70,6 +70,12 @@ def list_rfps(
             "deadline": analysis.submission_deadline if analysis else "TBD",
             "requirements_count": len(reqs),
             "summary": analysis.executive_summary[:160] + "..." if (analysis and analysis.executive_summary) else "Executive summary under extraction...",
+            "analysis": {
+                "overall_risk_score": analysis.overall_risk_score if analysis else "Medium",
+                "submission_deadline": analysis.submission_deadline if analysis else "TBD",
+                "budget": analysis.budget if analysis else "TBD",
+                "executive_summary": analysis.executive_summary if analysis else "",
+            } if analysis else None,
         })
     return results
 

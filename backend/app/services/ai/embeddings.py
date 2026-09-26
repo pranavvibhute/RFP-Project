@@ -16,7 +16,15 @@ def _load_sentence_transformer():
             "sentence-transformers is not available. Install backend requirements to enable embeddings."
         ) from exc
 
-    return SentenceTransformer(settings.EMBEDDING_MODEL)
+    device = "cpu"
+    try:
+        import torch
+        if torch.cuda.is_available():
+            device = "cuda"
+    except Exception:
+        pass
+
+    return SentenceTransformer(settings.EMBEDDING_MODEL, device=device)
 
 
 class EmbeddingService:
@@ -29,6 +37,7 @@ class EmbeddingService:
         model = _load_sentence_transformer()
         vectors = model.encode(
             list(texts),
+            batch_size=16,
             normalize_embeddings=True,
             convert_to_numpy=True,
             show_progress_bar=False,

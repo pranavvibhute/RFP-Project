@@ -11,13 +11,15 @@ class Settings(BaseSettings):
     GEMINI_API_KEY: str
     GEMINI_MODEL: str
 
-    AI_PRIMARY_PROVIDER: str = "qwen"
+    AI_PRIMARY_PROVIDER: str = "gemini"
     AI_FALLBACK_PROVIDER: str = "gemini"
 
-    QWEN_BASE_URL: str = ""
+    OPEN_ROUTER_API_KEY: str | None = None
+    OPENROUTER_API_KEY: str | None = None
+    QWEN_BASE_URL: str = "https://openrouter.ai/api/v1"
     QWEN_API_KEY: str | None = None
-    QWEN_MODEL: str = "qwen3-instruct"
-    QWEN_TIMEOUT_SECONDS: float = 90.0
+    QWEN_MODEL: str = "qwen/qwen-2.5-72b-instruct"
+    QWEN_TIMEOUT_SECONDS: float = 12.0
 
     EMBEDDING_MODEL: str = "BAAI/bge-large-en-v1.5"
 

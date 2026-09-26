@@ -15,8 +15,10 @@ import {
   Loader2,
   FileCheck2,
   Sparkles,
-  ArrowRight
+  ArrowRight,
+  ArrowUpRight
 } from "lucide-react";
+import Link from "next/link";
 import axios from "axios";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
@@ -60,6 +62,7 @@ export default function UploadPage() {
   const [isDragOver, setIsDragOver] = useState(false);
   const [loading, setLoading] = useState(false);
   const [progressStep, setProgressStep] = useState<string>("");
+  const [elapsedSeconds, setElapsedSeconds] = useState<number>(0);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<AnalysisData | null>(null);
   const [rawResponse, setRawResponse] = useState<any>(null);
@@ -99,33 +102,82 @@ export default function UploadPage() {
     setLoading(true);
     setError(null);
     setResult(null);
+    setElapsedSeconds(0);
+
+    console.group("🚀 [BidWise AI Multi-Agent Pipeline]");
+    console.log("📄 [Step 1/5] Selected File for Analysis:", {
+      name: file.name,
+      sizeBytes: file.size,
+      sizeFormatted: (file.size / (1024 * 1024)).toFixed(2) + " MB",
+      type: file.type || "application/octet-stream",
+      dispatchedAt: new Date().toLocaleTimeString(),
+    });
 
     const formData = new FormData();
     formData.append("file", file);
 
+    setProgressStep("Step 1/4: Ingesting document & extracting text/tables...");
+    console.log("📡 [Step 2/5] Dispatching multipart/form-data POST request to:", `${API_BASE_URL}/api/v1/analyze`);
+
+    // Dynamic progress stepper based on live active seconds
+    const intervalTimer = setInterval(() => {
+      setElapsedSeconds((prev) => {
+        const next = +(prev + 0.5).toFixed(1);
+        if (next < 2.0) {
+          setProgressStep("Step 1/4: Ingesting document & extracting text/tables...");
+        } else if (next < 7.0) {
+          setProgressStep("Step 2/4: Chunking text & embedding dense vectors in Qdrant...");
+        } else if (next < 16.0) {
+          setProgressStep("Step 3/4: Multi-Agent Core running in parallel (Doc, Req, Risk, Profit, Gap Analysis)...");
+        } else {
+          setProgressStep("Step 4/4: Synthesizing executive Go/No-Go bid decision & readiness score...");
+        }
+        return next;
+      });
+    }, 500);
+
+    const startTime = performance.now();
+
     try {
-      setProgressStep("Extracting structured text from document...");
-      await new Promise((r) => setTimeout(r, 600));
-
-      setProgressStep("Indexing vectors & embedding chunks in Qdrant...");
-      await new Promise((r) => setTimeout(r, 800));
-
-      setProgressStep("Running Gemini AI intelligence & extracting requirements...");
-
       const response = await axios.post<AnalysisResponse>(`${API_BASE_URL}/api/v1/analyze`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
+      const elapsedSec = ((performance.now() - startTime) / 1000).toFixed(2);
+      console.log(`✅ [Step 5/5] Backend response received successfully in ${elapsedSec}s! Status:`, response.status);
+      console.log("📦 [Payload] Raw Response Payload from Backend:", response.data);
+
       setRawResponse(response.data);
+
+      // Support both rich analysis and standard executive summary
       const data = response.data.analysis || response.data.executive_summary || (response.data as any);
+      
+      console.log("📊 [Render] Formatted Analysis Loaded for UI:", {
+        executive_summary: data.executive_summary || data.project_overview,
+        requirements_count: data.requirements?.length || 0,
+        risks_count: data.risks?.length || 0,
+        bid_recommendation: data.bid_recommendation,
+        submission_deadline: data.submission_deadline || (data.deadlines?.[0]?.date_or_detail),
+        budget: data.budget,
+        overall_risk: data.overall_risk,
+      });
+
       setResult(data);
+      console.log("🎉 UI components populated successfully. Pipeline complete!");
     } catch (err: any) {
-      console.error("Upload error:", err);
+      console.error("❌ [Pipeline Error] Analysis execution failed:", {
+        error: err.message,
+        status: err.response?.status,
+        detail: err.response?.data?.detail,
+        data: err.response?.data,
+      });
       const msg = err.response?.data?.detail || err.message || "Analysis failed. Ensure FastAPI server is running on port 8000.";
       setError(msg);
     } finally {
+      clearInterval(intervalTimer);
       setLoading(false);
       setProgressStep("");
+      console.groupEnd();
     }
   };
 
@@ -237,9 +289,14 @@ export default function UploadPage() {
           {/* Progress Indicator */}
           {loading && (
             <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-2">
-              <div className="flex items-center gap-3 text-xs font-bold text-slate-800">
-                <Loader2 className="w-4 h-4 animate-spin text-[#c8102e]" />
-                <span>{progressStep}</span>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3 text-xs font-bold text-slate-800">
+                  <Loader2 className="w-4 h-4 animate-spin text-[#c8102e]" />
+                  <span>{progressStep}</span>
+                </div>
+                <span className="text-[11px] font-mono font-bold text-[#c8102e] bg-rose-50 px-2.5 py-1 rounded-md border border-rose-200">
+                  ⏱️ {elapsedSeconds.toFixed(1)}s
+                </span>
               </div>
               <div className="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
                 <div className="bg-[#c8102e] h-1.5 rounded-full animate-pulse w-3/4"></div>
@@ -251,6 +308,21 @@ export default function UploadPage() {
         {/* Results Container */}
         {result && (
           <div className="bg-white rounded-2xl border border-slate-200 shadow-2xs overflow-hidden">
+            {/* Database Persistence Banner */}
+            <div className="bg-emerald-50/80 border-b border-emerald-200 px-6 py-3 flex items-center justify-between">
+              <div className="flex items-center gap-2 text-xs font-bold text-emerald-800">
+                <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0" />
+                <span>RFP and Multi-Agent findings successfully stored in the Database & Registry!</span>
+              </div>
+              <Link
+                href="/rfps"
+                className="flex items-center gap-1 text-xs font-bold text-[#c8102e] hover:underline shrink-0"
+              >
+                <span>View in Registry</span>
+                <ArrowUpRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
+
             {/* Tabs Header */}
             <div className="flex items-center justify-between border-b border-slate-200 px-6 pt-4 bg-slate-50/50">
               <div className="flex gap-2">

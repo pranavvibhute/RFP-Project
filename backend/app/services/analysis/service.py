@@ -52,6 +52,7 @@ class AnalysisService:
             char_count=extraction.char_count,
             processing_time_seconds=round(elapsed, 2),
             executive_summary=summary,
+            analysis=result.analysis,
         )
 
 

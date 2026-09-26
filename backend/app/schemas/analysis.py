@@ -1,4 +1,6 @@
+from typing import Optional
 from pydantic import BaseModel, Field
+from app.schemas.ai_analysis import AIAnalysisSchema
 
 class Deadline(BaseModel):
     label: str = Field(description="What the deadline is for, e.g. 'Submission Deadline'")
@@ -23,3 +25,5 @@ class AnalyzeResponse(BaseModel):
     char_count: int
     processing_time_seconds: float
     executive_summary: ExecutiveSummary
+    analysis: Optional[AIAnalysisSchema] = None
+    rfp_id: Optional[int] = None

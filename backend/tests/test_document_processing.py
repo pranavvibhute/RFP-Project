@@ -9,7 +9,59 @@ from app.models.user_profile import UserProfile
 from app.models.rfp import RFP
 from app.models.analysis import Analysis
 from app.models.requirement import Requirement
-# 3. Build a typed mock DocumentAnalysisResult — bypasses provider selection,
+from app.schemas.ai_analysis import AIAnalysisSchema, RequirementSchema, RiskSchema
+from app.services.ai.intelligence import DocumentAnalysisResult
+from app.services.document.document_processing_service import document_processing_service
+
+# Use in-memory SQLite database for testing
+TEST_DATABASE_URL = "sqlite:///:memory:"
+
+
+def test_document_processing_pipeline() -> None:
+    # 1. Setup Test Database
+    engine = create_engine(TEST_DATABASE_URL, connect_args={"check_same_thread": False})
+    TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+    Base.metadata.create_all(bind=engine)
+    
+    db = TestingSessionLocal()
+    
+    try:
+        # 2. Populate basic database structure
+        org = Organization(name="Test Org", industry="Testing", website="https://test.org")
+        db.add(org)
+        db.commit()
+        db.refresh(org)
+        
+        user = UserProfile(
+            organization_id=org.id,
+            auth_user_id="test_auth_user",
+            full_name="Tester",
+            role="member",
+        )
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+
+        # Create dummy file to read
+        dummy_file_path = "test_rfp_doc.docx"
+        with open(dummy_file_path, "w", encoding="utf-8") as f:
+            f.write("This is a dummy RFP document for BidWise AI testing.")
+        
+        rfp = RFP(
+            organization_id=org.id,
+            uploaded_by=user.id,
+            title="Test Cloud Migration RFP",
+            customer_name="Riverdale Municipal",
+            file_name="test_rfp_doc.docx",
+            file_path=dummy_file_path,
+            document_type="RFP",
+            status="Uploaded",
+        )
+        db.add(rfp)
+        db.commit()
+        db.refresh(rfp)
+
+        # 3. Build a typed mock DocumentAnalysisResult — bypasses provider selection,
         #    embeddings, and Qdrant so the test runs fully offline.
         mock_analysis_schema = AIAnalysisSchema(
             executive_summary="The City of Riverdale is migrating its legacy core banking to secure cloud workflows.",
@@ -40,7 +92,7 @@ from app.models.requirement import Requirement
         mock_extraction.page_count = 0
         mock_extraction.full_text = "This is a dummy RFP document for BidWise AI testing."
 
-with patch("app.services.document.document_processing_service.extract_text", return_value=mock_extraction), \
+        with patch("app.services.document.document_processing_service.extract_text", return_value=mock_extraction), \
              patch("app.services.document.document_processing_service.document_intelligence_service.analyze",
                    return_value=mock_analysis_result):
             # Run the process service

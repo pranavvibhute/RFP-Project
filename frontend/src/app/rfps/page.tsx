@@ -15,11 +15,14 @@ interface RFPItem {
   file_name: string;
   status: string;
   created_at: string;
+  deadline?: string;
+  budget?: string;
+  risk_level?: string;
   analysis?: {
-    overall_risk_score: string;
-    submission_deadline: string;
-    budget: string;
-    executive_summary: string;
+    overall_risk_score?: string;
+    submission_deadline?: string;
+    budget?: string;
+    executive_summary?: string;
   };
 }
 
@@ -128,17 +131,17 @@ export default function RFPsPage() {
                       <td className="p-4 font-semibold text-slate-700">
                         <div className="flex items-center gap-1">
                           <Clock className="w-3.5 h-3.5 text-[#c8102e]" />
-                          <span>{rfp.analysis?.submission_deadline || "TBD"}</span>
+                          <span>{rfp.analysis?.submission_deadline || rfp.deadline || "TBD"}</span>
                         </div>
                       </td>
-                      <td className="p-4 font-bold text-slate-800">{rfp.analysis?.budget || "TBD"}</td>
+                      <td className="p-4 font-bold text-slate-800">{rfp.analysis?.budget || rfp.budget || "TBD"}</td>
                       <td className="p-4">
                         <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
-                          (rfp.analysis?.overall_risk_score || "").toLowerCase() === "high"
+                          ((rfp.analysis?.overall_risk_score || rfp.risk_level || "").toLowerCase() === "high")
                             ? "bg-rose-100 text-rose-700"
                             : "bg-emerald-100 text-emerald-700"
                         }`}>
-                          {rfp.analysis?.overall_risk_score || "Medium"} Risk
+                          {rfp.analysis?.overall_risk_score || rfp.risk_level || "Medium"} Risk
                         </span>
                       </td>
                       <td className="p-4">

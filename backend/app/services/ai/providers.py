@@ -33,16 +33,16 @@ class LLMProvider(Protocol):
 
 
 class QwenProvider:
-    provider_name = "qwen"
+    provider_name = "openrouter"
 
     def __init__(self, model_name: str | None = None) -> None:
-        if not settings.QWEN_BASE_URL:
-            raise SummarizationError("QWEN_BASE_URL is not configured.")
+        self.base_url = (settings.QWEN_BASE_URL or "https://openrouter.ai/api/v1").rstrip("/")
+        self.api_key = settings.OPEN_ROUTER_API_KEY or settings.OPENROUTER_API_KEY or settings.QWEN_API_KEY
+        if not self.api_key:
+            raise SummarizationError("OPEN_ROUTER_API_KEY / QWEN_API_KEY is not configured.")
 
         self.model_name = model_name or settings.QWEN_MODEL
-        self.base_url = settings.QWEN_BASE_URL.rstrip("/")
-        self.api_key = settings.QWEN_API_KEY
-        self.timeout = settings.QWEN_TIMEOUT_SECONDS
+        self.timeout = min(float(getattr(settings, "QWEN_TIMEOUT_SECONDS", 8.0)), 8.0)
 
     def generate(
         self,
@@ -54,7 +54,7 @@ class QwenProvider:
     ) -> ModelResponse:
         import json
         
-        # Explicitly instruct Qwen about the exact JSON schema structure required
+        # Explicitly instruct model about the exact JSON schema structure required
         schema_instruction = (
             f"\n\nYou MUST return a JSON object that strictly adheres to the following JSON Schema structure:\n"
             f"{json.dumps(response_schema, indent=2)}\n"
@@ -73,7 +73,11 @@ class QwenProvider:
             }
         }
 
-        headers = {"Content-Type": "application/json"}
+        headers = {
+            "Content-Type": "application/json",
+            "HTTP-Referer": "https://bidwise.ai",
+            "X-Title": "BidWise AI RFP Intelligence"
+        }
         if self.api_key:
             headers["Authorization"] = f"Bearer {self.api_key}"
 
@@ -126,18 +130,25 @@ class GeminiProvider:
         )
 
 
-def build_provider(name: str) -> LLMProvider:
+def build_provider(name: str, model_name: str | None = None) -> LLMProvider:
     normalized = name.strip().lower()
-    if normalized == "qwen":
-        return QwenProvider()
     if normalized == "gemini":
         return GeminiProvider()
+    if normalized in ("qwen", "openrouter", "deepseek"):
+        return QwenProvider(model_name=model_name)
+    if normalized.startswith("openrouter/"):
+        return QwenProvider(model_name=name)
     if normalized == "llama":
-        return QwenProvider(model_name="meta-llama/llama-3-8b-instruct:free")
+        return QwenProvider(model_name=model_name or "meta-llama/llama-3-8b-instruct:free")
     if normalized == "mistral":
-        return QwenProvider(model_name="mistralai/mistral-7b-instruct:free")
+        return QwenProvider(model_name=model_name or "mistralai/mistral-7b-instruct:free")
     if normalized == "phi":
-        return QwenProvider(model_name="microsoft/phi-3-medium-128k-instruct:free")
+        return QwenProvider(model_name=model_name or "microsoft/phi-3-medium-128k-instruct:free")
     if normalized in ("gemma", "gemma2"):
-        return QwenProvider(model_name="google/gemma-2-9b-it:free")
+        return QwenProvider(model_name=model_name or "google/gemma-2-9b-it:free")
+    
+    # Generic fallback: if it looks like an OpenRouter model identifier, use QwenProvider
+    if "/" in name:
+        return QwenProvider(model_name=name)
+        
     raise SummarizationError(f"Unsupported AI provider: {name}")

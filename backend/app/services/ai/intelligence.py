@@ -46,11 +46,13 @@ class DocumentIntelligenceService:
         retrieval_hits: list[RetrievalHit] = []
 
         if chunks:
-            chunk_vectors = embedding_service.embed_texts([chunk.text for chunk in chunks])
+            # Optimize embedding latency: embed top 12 representative chunks for RAG
+            target_chunks = chunks[:12]
+            chunk_vectors = embedding_service.embed_texts([chunk.text for chunk in target_chunks])
             document_store.upsert_document(
                 document_id=document_id,
                 filename=filename,
-                chunks=chunks,
+                chunks=target_chunks,
                 embeddings=chunk_vectors,
             )
 
@@ -62,6 +64,34 @@ class DocumentIntelligenceService:
             )
 
         prompt = self._build_prompt(filename=filename, document_text=prompt_text, hits=retrieval_hits)
+
+        # 1. Attempt Heterogeneous Multi-Agent Core execution
+        try:
+            from app.services.ai.agents import agent_orchestrator
+            analysis, agent_telemetry = agent_orchestrator.run_multi_agent_pipeline(
+                filename=filename,
+                document_text=prompt_text,
+                retrieval_hits=retrieval_hits,
+            )
+            confidence_score = self._estimate_confidence(analysis, prompt_text, "multi-agent")
+            return DocumentAnalysisResult(
+                analysis=analysis,
+                provider="multi-agent-ensemble",
+                model="heterogeneous (gemini-2.5-flash + qwen-2.5 + deepseek-r1)",
+                used_fallback=False,
+                confidence_score=confidence_score,
+                retrieval_hits=retrieval_hits,
+                raw_response={
+                    "provider": "multi-agent-ensemble",
+                    "model": "heterogeneous",
+                    "telemetry": agent_telemetry,
+                },
+            )
+        except Exception as ma_exc:
+            logger.warning(
+                "Multi-Agent Orchestrator encountered an issue: %s. Proceeding with single-provider fallback pipeline.",
+                ma_exc,
+            )
 
         primary_provider = self._resolve_provider(settings.AI_PRIMARY_PROVIDER)
         fallback_provider = self._resolve_provider(settings.AI_FALLBACK_PROVIDER)

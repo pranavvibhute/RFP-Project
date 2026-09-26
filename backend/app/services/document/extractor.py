@@ -32,8 +32,26 @@ def _clean_text(text: str) -> str:
     return text.strip()
 
 
+def _format_table_as_markdown(table_data: list[list[str | None]]) -> str:
+    """Formats 2D table cell array into a clean GitHub Flavored Markdown table."""
+    if not table_data or not table_data[0]:
+        return ""
+    headers = [str(c or "").strip().replace("\n", " ") for c in table_data[0]]
+    if not any(headers):
+        return ""
+    header_line = "| " + " | ".join(headers) + " |"
+    separator_line = "| " + " | ".join(["---"] * len(headers)) + " |"
+    rows = []
+    for row in table_data[1:]:
+        row_cells = [str(c or "").strip().replace("\n", " ") for c in row]
+        if len(row_cells) < len(headers):
+            row_cells.extend([""] * (len(headers) - len(row_cells)))
+        rows.append("| " + " | ".join(row_cells[: len(headers)]) + " |")
+    return "\n" + "\n".join([header_line, separator_line] + rows) + "\n"
+
+
 def extract_pdf(file_bytes: bytes, filename: str) -> ExtractionResult:
-    """Extract text from a PDF using PyMuPDF, with page markers."""
+    """Extract text from a PDF using PyMuPDF, with structured table detection and page markers."""
     try:
         doc = fitz.open(stream=file_bytes, filetype="pdf")
     except Exception as e:
@@ -41,10 +59,25 @@ def extract_pdf(file_bytes: bytes, filename: str) -> ExtractionResult:
 
     pages_text = []
     for page_num, page in enumerate(doc, start=1):
-        page_text = page.get_text("text")
-        page_text = _clean_text(page_text)
+        page_content = []
+        page_text = _clean_text(page.get_text("text"))
         if page_text:
-            pages_text.append(f"\n--- Page {page_num} ---\n{page_text}")
+            page_content.append(page_text)
+
+        # Detect and extract structured tables (pricing matrices, eligibility tables, SLA penalties)
+        try:
+            tabs = page.find_tables()
+            if tabs and hasattr(tabs, "tables"):
+                for tab in tabs.tables:
+                    extracted = tab.extract()
+                    md_tab = _format_table_as_markdown(extracted)
+                    if md_tab:
+                        page_content.append(f"\n[Extracted Table (Page {page_num})]:\n{md_tab}")
+        except Exception:
+            pass  # Fall back to standard page text if vector graphics are irregular
+
+        if page_content:
+            pages_text.append(f"\n--- Page {page_num} ---\n" + "\n".join(page_content))
 
     page_count = doc.page_count
     doc.close()
