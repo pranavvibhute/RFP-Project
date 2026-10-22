@@ -31,9 +31,20 @@ class DocumentAnalysisResult:
 class DocumentIntelligenceService:
     """Runs retrieval-assisted analysis with a primary LLM and Gemini fallback."""
 
-    def analyze(self, document_text: str, filename: str) -> DocumentAnalysisResult:
+    def analyze(self, document_text: str, filename: str, org_info: dict | None = None) -> DocumentAnalysisResult:
         if not document_text or not document_text.strip():
             raise SummarizationError("No text provided to analyze.")
+
+        if not org_info:
+            try:
+                from app.database.session import SessionLocal
+                from app.models.organization import Organization
+                with SessionLocal() as db:
+                    org = db.query(Organization).first()
+                    if org:
+                        org_info = org.get_profile_dict()
+            except Exception:
+                pass
 
         prompt_text = truncate_text(document_text.strip(), settings.AI_MAX_PROMPT_CHARS)
         chunks = chunk_text(
@@ -72,6 +83,7 @@ class DocumentIntelligenceService:
                 filename=filename,
                 document_text=prompt_text,
                 retrieval_hits=retrieval_hits,
+                org_info=org_info,
             )
             confidence_score = self._estimate_confidence(analysis, prompt_text, "multi-agent")
             return DocumentAnalysisResult(

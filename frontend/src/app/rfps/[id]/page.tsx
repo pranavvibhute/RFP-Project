@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import axios from "axios";
+import WhatIfSimulator from "@/components/rfp/WhatIfSimulator";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
 
@@ -33,6 +34,7 @@ interface RFPDetail {
   id: number;
   title: string;
   customer_name: string;
+  customer_id: string;
   file_name: string;
   status: string;
   created_at: string;
@@ -116,6 +118,15 @@ export default function RFPDetailPage({ params }: { params: Promise<{ id: string
 
           <div className="flex items-center gap-3">
             <a
+              href={`${API_BASE_URL}/api/v1/reports/docx/${rfp.id}`}
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-2xs transition-colors"
+            >
+              <Download className="w-3.5 h-3.5" />
+              <span>Export Word (.docx)</span>
+            </a>
+            <a
               href={`${API_BASE_URL}/api/v1/reports/pdf/${rfp.id}`}
               target="_blank"
               rel="noreferrer"
@@ -152,7 +163,16 @@ export default function RFPDetailPage({ params }: { params: Promise<{ id: string
           </div>
 
           <h1 className="text-xl font-black text-slate-900 tracking-tight">{rfp.title}</h1>
-          <p className="text-xs text-slate-500 font-medium">Customer: <span className="font-bold text-slate-800">{rfp.customer_name || "Enterprise"}</span> | File: <span className="font-mono text-slate-600">{rfp.file_name}</span></p>
+          <div className="flex items-center gap-2">
+            <p className="text-xs text-slate-500 font-medium">Customer: <span className="font-bold text-slate-800">{rfp.customer_name || "Enterprise"}</span> | File: <span className="font-mono text-slate-600">{rfp.file_name}</span></p>
+            <Link
+              href={`/customers/${rfp.customer_id || rfp.customer_name}`}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-50 shadow-2xs"
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Customer Intelligence</span>
+            </Link>
+          </div>
 
           {/* Quick Metrics */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-3 border-t border-slate-100 text-xs">
@@ -251,6 +271,9 @@ export default function RFPDetailPage({ params }: { params: Promise<{ id: string
             </div>
           </div>
         )}
+
+        {/* What-If Bidding Scenario Simulator */}
+        <WhatIfSimulator rfpId={rfp.id} rfpTitle={rfp.title} />
 
         {/* Executive Summary */}
         <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-2xs space-y-3">

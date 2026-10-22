@@ -50,8 +50,50 @@ def _format_table_as_markdown(table_data: list[list[str | None]]) -> str:
     return "\n" + "\n".join([header_line, separator_line] + rows) + "\n"
 
 
+def _ocr_scanned_pdf_pages(doc: fitz.Document, filename: str) -> list[str]:
+    """Uses Gemini 2.5 Flash Multimodal Vision to transcribe scanned image pages."""
+    try:
+        from app.core.config import settings
+        if not settings.GEMINI_API_KEY:
+            return []
+
+        from google import genai
+        from google.genai import types
+
+        client = genai.Client(api_key=settings.GEMINI_API_KEY)
+        ocr_pages = []
+
+        for page_num, page in enumerate(doc, start=1):
+            pix = page.get_pixmap(dpi=150)
+            img_bytes = pix.tobytes("png")
+
+            prompt = (
+                f"Transcribe all text, clauses, headings, bullet points, and tables from Page {page_num} of this scanned RFP document ('{filename}'). "
+                "Format any detected tables in clean GitHub Flavored Markdown (GFM). "
+                "Do not summarize or omit text. Return the raw transcribed text cleanly."
+            )
+
+            try:
+                response = client.models.generate_content(
+                    model=settings.GEMINI_MODEL,
+                    contents=[
+                        types.Part.from_bytes(data=img_bytes, mime_type="image/png"),
+                        prompt,
+                    ],
+                )
+                text = _clean_text(response.text or "")
+                if text:
+                    ocr_pages.append(f"\n--- Page {page_num} (OCR Scanned) ---\n" + text)
+            except Exception:
+                continue
+
+        return ocr_pages
+    except Exception:
+        return []
+
+
 def extract_pdf(file_bytes: bytes, filename: str) -> ExtractionResult:
-    """Extract text from a PDF using PyMuPDF, with structured table detection and page markers."""
+    """Extract text from a PDF using PyMuPDF, with structured table detection and Multimodal Vision OCR fallback."""
     try:
         doc = fitz.open(stream=file_bytes, filetype="pdf")
     except Exception as e:
@@ -79,15 +121,20 @@ def extract_pdf(file_bytes: bytes, filename: str) -> ExtractionResult:
         if page_content:
             pages_text.append(f"\n--- Page {page_num} ---\n" + "\n".join(page_content))
 
+    full_text = "\n".join(pages_text).strip()
+
+    # Phase 2 Enhancement: If document had zero digital text (scanned PDF), apply Multimodal Vision OCR
+    if not full_text:
+        ocr_pages = _ocr_scanned_pdf_pages(doc, filename)
+        if ocr_pages:
+            full_text = "\n".join(ocr_pages).strip()
+
     page_count = doc.page_count
     doc.close()
 
-    full_text = "\n".join(pages_text).strip()
-
     if not full_text:
         raise EmptyDocumentError(
-            f"'{filename}' produced no extractable text. "
-            "It may be a scanned/image-only PDF — OCR is not in Sprint 1 scope."
+            f"'{filename}' produced no extractable text even after Multimodal Vision OCR processing."
         )
 
     return ExtractionResult(

@@ -14,6 +14,10 @@ export default function ReportsPage() {
     window.open(`${API_BASE_URL}/api/v1/reports/excel`, "_blank");
   };
 
+  const handleDownloadDocx = () => {
+    window.open(`${API_BASE_URL}/api/v1/reports/docx/1`, "_blank");
+  };
+
   return (
     <DashboardLayout>
       <div className="space-y-6">
@@ -22,10 +26,27 @@ export default function ReportsPage() {
             <span className="w-2.5 h-2.5 rounded-full bg-[#c8102e]"></span>
             <h2 className="text-lg font-bold text-slate-800 tracking-tight">Reports & Analytics Export</h2>
           </div>
-          <p className="text-xs text-slate-500 font-medium">Export executive summaries, requirements compliance matrices, and risk assessments to PDF or Excel CSV.</p>
+          <p className="text-xs text-slate-500 font-medium">Export executive summaries, requirements compliance matrices, and risk assessments to Word, PDF, or Excel CSV.</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-2xs space-y-4">
+            <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+              <FileText className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="text-sm font-bold text-slate-800">Executive Word (.docx) Proposal</h3>
+              <p className="text-xs text-slate-500 mt-1">Full professional Word report with Executive Summary, Go/No-Go Decision, SLA Penalties, and Formatted Requirements Table.</p>
+            </div>
+            <button
+              onClick={handleDownloadDocx}
+              className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-xl text-xs font-bold shadow-xs hover:bg-blue-700 transition"
+            >
+              <Download className="w-4 h-4" />
+              <span>Download Word (.docx)</span>
+            </button>
+          </div>
+
           <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-2xs space-y-4">
             <div className="w-10 h-10 rounded-xl bg-rose-50 text-[#c8102e] flex items-center justify-center">
               <FileText className="w-5 h-5" />

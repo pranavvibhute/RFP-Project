@@ -224,7 +224,7 @@ RFP-Project/
 
 4. **Launch Backend Server**:
    ```powershell
-   .\venv_gpu\Scripts\python.exe -m uvicorn app.main:app --host 127.0.0.1 --port 8000
+   .\gpu_venv\Scripts\python.exe -m uvicorn app.main:app --host 127.0.0.1 --port 8000
    ```
    - API Docs: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
    - Health Check: [http://127.0.0.1:8000/api/v1/health](http://127.0.0.1:8000/api/v1/health)

@@ -7,12 +7,14 @@ from app.database.session import get_db
 from app.models.rfp import RFP
 from app.models.analysis import Analysis
 from app.models.requirement import Requirement
+from app.models.organization import Organization
 from app.repositories.rfp_repository import RFPRepository
 from app.repositories.analysis_repository import AnalysisRepository
 from app.repositories.requirement_repository import RequirementRepository
 from app.services.rfp.upload_service import upload_service
 from app.services.document.document_processing_service import document_processing_service
 from app.services.ai.qa_service import qa_service
+from app.services.ai.simulation_service import SimulationRequest, simulation_service
 
 router = APIRouter(prefix="/rfps", tags=["RFPs"])
 
@@ -305,6 +307,51 @@ def get_rfp_detail(rfp_id: int, db: Session = Depends(get_db)) -> dict[str, Any]
     }
 
 
+@router.get("/{rfp_id}/progress")
+def get_rfp_progress(rfp_id: int, db: Session = Depends(get_db)) -> dict[str, Any]:
+    """Retrieve detailed real-time processing stage and agent telemetry for an RFP."""
+    rfp = db.query(RFP).filter(RFP.id == rfp_id).first()
+    if not rfp:
+        raise HTTPException(status_code=404, detail="RFP not found.")
+
+    analysis = db.query(Analysis).filter(Analysis.rfp_id == rfp_id).first()
+    raw = analysis.raw_response if analysis and isinstance(analysis.raw_response, dict) else {}
+    telemetry = raw.get("telemetry", {})
+
+    status = (rfp.status or "Processing").lower()
+    is_completed = status == "completed"
+    is_failed = status == "failed"
+
+    stages = [
+        {"stage": "Document Ingestion & Table Extraction", "status": "completed" if rfp.extracted_text or is_completed else ("failed" if is_failed else "in_progress")},
+        {"stage": "Qdrant Vector Embedding (BGE-Large GPU)", "status": "completed" if is_completed or telemetry else ("failed" if is_failed else "pending")},
+        {"stage": "Multi-Agent Parallel Execution (Qwen 72B, DeepSeek, Gemini)", "status": "completed" if is_completed else ("failed" if is_failed else "pending")},
+        {"stage": "Executive Go/No-Go Decision Synthesis", "status": "completed" if is_completed else ("failed" if is_failed else "pending")},
+    ]
+
+    return {
+        "rfp_id": rfp.id,
+        "title": rfp.title,
+        "status": rfp.status,
+        "is_completed": is_completed,
+        "stages": stages,
+        "execution_time_ms": telemetry.get("execution_time_ms") or (analysis.processing_time_ms if analysis else None),
+        "agents": {
+            "doc_parsing": telemetry.get("doc_parsing", {"status": "completed" if is_completed else "pending"}),
+            "requirement_analysis": telemetry.get("requirement_analysis", {"status": "completed" if is_completed else "pending"}),
+            "risk_compliance": telemetry.get("risk_compliance", {"status": "completed" if is_completed else "pending"}),
+            "profit_analysis": telemetry.get("profit_analysis", {"status": "completed" if is_completed else "pending"}),
+            "gap_analysis": telemetry.get("gap_analysis", {"status": "completed" if is_completed else "pending"}),
+            "bid_recommendation": telemetry.get("bid_recommendation", {"status": "completed" if is_completed else "pending"}),
+        },
+        "scores": {
+            "readiness_score": telemetry.get("readiness_score") or (int((analysis.confidence_score or 0.85) * 100) if analysis else None),
+            "win_probability_percent": telemetry.get("win_probability_percent", 70) if is_completed else None,
+            "overall_risk": analysis.overall_risk_score if analysis else None,
+        }
+    }
+
+
 @router.post("/{rfp_id}/chat")
 def chat_with_rfp(
     rfp_id: int,
@@ -319,6 +366,32 @@ def chat_with_rfp(
         raise HTTPException(status_code=400, detail="Question cannot be empty.")
 
     return qa_service.answer_question(db=db, rfp_id=rfp_id, question=payload.question.strip())
+
+
+@router.post("/{rfp_id}/simulate")
+def simulate_rfp_scenario(
+    rfp_id: int,
+    payload: SimulationRequest,
+    db: Session = Depends(get_db),
+) -> dict[str, Any]:
+    """Execute real-time What-If bidding simulation with partner teaming and price adjustments."""
+    rfp = db.query(RFP).filter(RFP.id == rfp_id).first()
+    if not rfp:
+        raise HTTPException(status_code=404, detail="RFP not found.")
+
+    analysis = db.query(Analysis).filter(Analysis.rfp_id == rfp_id).first()
+    if not analysis:
+        raise HTTPException(status_code=400, detail="Cannot run simulation: RFP has not completed baseline analysis.")
+
+    org = db.query(Organization).first()
+    org_info = org.get_profile_dict() if org else None
+
+    return simulation_service.run_simulation(
+        rfp=rfp,
+        analysis=analysis,
+        simulation=payload,
+        org_info=org_info,
+    )
 
 
 @router.post("/upload")

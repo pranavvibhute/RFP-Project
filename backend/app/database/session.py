@@ -32,6 +32,16 @@ except Exception as e:
 # Automatically ensure database tables exist
 Base.metadata.create_all(bind=engine)
 
+# Ensure SQLite migrations for added columns
+try:
+    with engine.begin() as conn:
+        col_rows = conn.exec_driver_sql("PRAGMA table_info(organizations)").fetchall()
+        cols = [r[1] for r in col_rows]
+        if cols and "profile_data" not in cols:
+            conn.exec_driver_sql("ALTER TABLE organizations ADD COLUMN profile_data JSON")
+except Exception:
+    pass
+
 SessionLocal = sessionmaker(
     bind=engine,
     autoflush=False,

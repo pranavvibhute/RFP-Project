@@ -1,8 +1,7 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { 
   LayoutDashboard, 
   Upload, 
@@ -14,15 +13,13 @@ import {
   FileSpreadsheet, 
   Activity, 
   Settings, 
-  Search, 
   LogOut,
-  Layers
+  Layers,
+  Building2
 } from "lucide-react";
 
 export default function Sidebar() {
   const pathname = usePathname();
-  const router = useRouter();
-  const [searchVal, setSearchVal] = useState("");
 
   const navSections = [
     {
@@ -50,6 +47,7 @@ export default function Sidebar() {
     {
       title: "Administration",
       items: [
+        { name: "Organization Profile", href: "/organization", icon: Building2 },
         { name: "Reports & Analytics", href: "/reports", icon: FileSpreadsheet },
         { name: "System Health", href: "/health", icon: Activity },
         { name: "Settings", href: "/settings", icon: Settings },
@@ -57,13 +55,7 @@ export default function Sidebar() {
     }
   ];
 
-  const handleSearchSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchVal.trim()) {
-      router.push(`/requirements?search=${encodeURIComponent(searchVal.trim())}`);
-      setSearchVal("");
-    }
-  };
+
 
   return (
     <aside className="w-64 bg-[#111625] text-slate-300 min-h-screen flex flex-col justify-between border-r border-slate-800 select-none shrink-0">
@@ -81,19 +73,7 @@ export default function Sidebar() {
           </div>
         </div>
 
-        {/* Search Bar Form */}
-        <form onSubmit={handleSearchSubmit} className="px-4 pt-4 pb-2">
-          <div className="relative">
-            <Search className="w-4 h-4 absolute left-3 top-2.5 text-slate-400" />
-            <input
-              type="text"
-              placeholder="Search requirements..."
-              value={searchVal}
-              onChange={(e) => setSearchVal(e.target.value)}
-              className="w-full bg-[#1a2133] text-xs text-white placeholder-slate-400 pl-9 pr-3 py-2 rounded-lg border border-slate-700/50 focus:outline-none focus:border-[#c8102e] transition font-medium"
-            />
-          </div>
-        </form>
+
 
         {/* Navigation Sections */}
         <nav className="px-3 py-2 space-y-5 text-xs">
