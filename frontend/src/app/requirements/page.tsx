@@ -3,9 +3,7 @@
 import { useEffect, useState } from "react";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import { CheckSquare, Filter, CheckCircle2, AlertCircle, Loader2, X } from "lucide-react";
-import axios from "axios";
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+import { api } from "@/lib/api";
 
 interface RequirementItem {
   id: number;
@@ -25,7 +23,7 @@ export default function RequirementsPage() {
 
   const fetchRequirements = async () => {
     try {
-      const res = await axios.get<RequirementItem[]>(`${API_BASE_URL}/api/v1/requirements`);
+      const res = await api.get<RequirementItem[]>("/api/v1/requirements");
       setRequirements(res.data);
     } catch (err) {
       console.error("Failed to fetch requirements:", err);
@@ -59,7 +57,7 @@ export default function RequirementsPage() {
 
   const handleStatusChange = async (reqId: number, newStatus: string) => {
     try {
-      await axios.patch(`${API_BASE_URL}/api/v1/requirements/${reqId}/compliance`, {
+      await api.patch(`/api/v1/requirements/${reqId}/compliance`, {
         status: newStatus,
       });
       const updated = requirements.map((r) =>

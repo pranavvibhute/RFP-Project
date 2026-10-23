@@ -1,7 +1,9 @@
 from typing import Any
 from pydantic import BaseModel
-from fastapi import APIRouter, BackgroundTasks, Depends, File, Form, HTTPException, UploadFile
+from fastapi import APIRouter, BackgroundTasks, Depends, File, Form, HTTPException, Query, UploadFile
 from sqlalchemy.orm import Session
+from datetime import datetime, timedelta
+from sqlalchemy import func, extract
 
 from app.database.session import get_db
 from app.models.rfp import RFP
@@ -127,18 +129,120 @@ def get_rfp_stats(
     commercial_cnt = len([req for req in reqs if (req.category or "").lower() in ["commercial", "financial"]])
 
     return {
-        "total_rfps": total_rfps or 1225,
-        "active_rfps": active_rfps or 900,
-        "processing_rfps": processing_rfps or 200,
-        "completed_rfps": completed_rfps or 15,
-        "failed_rfps": failed_rfps or 0,
-        "high_risk_rfps": high_risk_rfps or 50,
-        "total_requirements": len(reqs) or 20,
+        "total_rfps": total_rfps,
+        "active_rfps": active_rfps,
+        "processing_rfps": processing_rfps,
+        "completed_rfps": completed_rfps,
+        "failed_rfps": failed_rfps,
+        "high_risk_rfps": high_risk_rfps,
+        "total_requirements": len(reqs),
         "categories": {
-            "mandatory": mandatory_cnt or 70,
-            "technical": technical_cnt or 20,
-            "commercial": commercial_cnt or 10,
+            "mandatory": mandatory_cnt,
+            "technical": technical_cnt,
+            "commercial": commercial_cnt,
         }
+    }
+
+
+@router.get("/metrics/time-series")
+def get_rfp_time_series(
+    organization_id: int = 1,
+    period: str = Query("weekly", pattern="^(daily|weekly|monthly)$"),
+    weeks: int = Query(12, ge=1, le=52),
+    db: Session = Depends(get_db),
+) -> dict[str, Any]:
+    """Retrieve time-series data for RFP metrics charts."""
+    rfp_repo = RFPRepository(db)
+    rfps = rfp_repo.get_by_organization(organization_id)
+    analyses = db.query(Analysis).all()
+    requirements = db.query(Requirement).all()
+    
+    # Map requirements to their analysis created_at for time-series
+    req_by_analysis = {}
+    for req in requirements:
+        if req.analysis_id not in req_by_analysis:
+            req_by_analysis[req.analysis_id] = []
+        req_by_analysis[req.analysis_id].append(req)
+    
+    # Calculate date threshold
+    now = datetime.now()
+    if period == "daily":
+        start_date = now - timedelta(days=weeks * 7)
+    elif period == "weekly":
+        start_date = now - timedelta(weeks=weeks)
+    else:  # monthly
+        start_date = now - timedelta(weeks=weeks * 4)
+    
+    # Filter RFPs within date range
+    filtered_rfps = [r for r in rfps if r.created_at and r.created_at >= start_date]
+    
+    # Generate time buckets
+    data_points = []
+    if period == "daily":
+        days = (now - start_date).days
+        for i in range(days + 1):
+            day = start_date + timedelta(days=i)
+            day_rfps = [r for r in filtered_rfps if r.created_at and r.created_at.date() == day.date()]
+            day_analyses = [a for a in analyses if a.created_at and a.created_at.date() == day.date()]
+            
+            # Count requirements from analyses created on this day
+            day_reqs_count = sum(len(req_by_analysis.get(a.id, [])) for a in day_analyses)
+            
+            high_risk = sum(1 for a in day_analyses if a.overall_risk_score and "high" in a.overall_risk_score.lower())
+            data_points.append({
+                "date": day.strftime("%Y-%m-%d"),
+                "label": day.strftime("%m/%d"),
+                "total_rfps": len(day_rfps),
+                "active_rfps": len([r for r in day_rfps if r.status in ["under_review", "Processing", "draft"]]),
+                "high_risk": high_risk,
+                "requirements_extracted": day_reqs_count,
+            })
+    elif period == "weekly":
+        week_start = start_date - timedelta(days=start_date.weekday())
+        for i in range(weeks):
+            week_end = week_start + timedelta(days=6)
+            week_rfps = [r for r in filtered_rfps if r.created_at and week_start <= r.created_at <= week_end]
+            week_analyses = [a for a in analyses if a.created_at and week_start <= a.created_at <= week_end]
+            
+            # Count requirements from analyses created this week
+            week_reqs_count = sum(len(req_by_analysis.get(a.id, [])) for a in week_analyses)
+            
+            high_risk = sum(1 for a in week_analyses if a.overall_risk_score and "high" in a.overall_risk_score.lower())
+            data_points.append({
+                "date": week_start.strftime("%Y-%m-%d"),
+                "label": f"Week {week_start.isocalendar()[1]}",
+                "total_rfps": len(week_rfps),
+                "active_rfps": len([r for r in week_rfps if r.status in ["under_review", "Processing", "draft"]]),
+                "high_risk": high_risk,
+                "requirements_extracted": week_reqs_count,
+            })
+            week_start = week_end + timedelta(days=1)
+    else:  # monthly
+        month_start = start_date.replace(day=1)
+        for i in range(weeks * 4 // 4 + 1):  # approximate months
+            if month_start > now:
+                break
+            next_month = month_start.replace(month=month_start.month + 1) if month_start.month < 12 else month_start.replace(year=month_start.year + 1, month=1)
+            month_rfps = [r for r in filtered_rfps if r.created_at and month_start <= r.created_at < next_month]
+            month_analyses = [a for a in analyses if a.created_at and month_start <= a.created_at < next_month]
+            
+            # Count requirements from analyses created this month
+            month_reqs_count = sum(len(req_by_analysis.get(a.id, [])) for a in month_analyses)
+            
+            high_risk = sum(1 for a in month_analyses if a.overall_risk_score and "high" in a.overall_risk_score.lower())
+            data_points.append({
+                "date": month_start.strftime("%Y-%m-%d"),
+                "label": month_start.strftime("%b %Y"),
+                "total_rfps": len(month_rfps),
+                "active_rfps": len([r for r in month_rfps if r.status in ["under_review", "Processing", "draft"]]),
+                "high_risk": high_risk,
+                "requirements_extracted": month_reqs_count,
+            })
+            month_start = next_month
+    
+    return {
+        "period": period,
+        "data_points": data_points
     }
 
 
@@ -169,7 +273,8 @@ def get_dashboard_overview(
             "uploaded_at": r.created_at.strftime("%d/%m/%Y") if r.created_at else "Recently",
             "risk_score": analysis.overall_risk_score if analysis else "Medium",
             "budget": analysis.budget if analysis else "TBD",
-            "deadline": analysis.submission_deadline if analysis else "TBD"
+            "deadline": analysis.submission_deadline if analysis else "TBD",
+            "char_count": len(r.extracted_text) if r.extracted_text else 0,
         })
 
     # Helper to parse budget strings like "$250K" or "$1.2M"
@@ -247,11 +352,8 @@ def get_dashboard_overview(
     return {
         "recent_extractions": recent_extractions,
         "revenue_chart_data": revenue_chart_data,
-        "total_pipeline": f"${total_pipeline:,.0f}" if total_pipeline > 0 else "$2,450,000",
-        "incomplete_profiles": incomplete_profiles[:5] if incomplete_profiles else [
-            {"id": 1, "name": "Riverdale ERP RFP", "customer": "City of Riverdale", "progress": 80},
-            {"id": 2, "name": "Secure Cloud Tender", "customer": "HealthCorp", "progress": 60}
-        ],
+        "total_pipeline": f"${total_pipeline:,.0f}" if total_pipeline > 0 else "$0",
+        "incomplete_profiles": incomplete_profiles[:5] if incomplete_profiles else [],
         "compliance": {
             "rate": compliance_rate,
             "compliant": compliant_count,

@@ -2,8 +2,11 @@ import io
 from fastapi.testclient import TestClient
 
 from app.main import app
+from app.core.security import create_access_token
 
 client = TestClient(app)
+test_token = create_access_token(data={"sub": "1", "email": "test@example.com", "role": "admin"})
+auth_headers = {"Authorization": f"Bearer {test_token}"}
 
 
 def test_health_check() -> None:
@@ -58,7 +61,7 @@ def test_analyze_empty_file() -> None:
 def test_organization_profile_endpoints() -> None:
     """Test retrieving and updating enterprise organization credentials vault."""
     # Test GET
-    get_res = client.get("/api/v1/settings/organization")
+    get_res = client.get("/api/v1/settings/organization", headers=auth_headers)
     assert get_res.status_code == 200
     data = get_res.json()
     assert "name" in data
@@ -76,7 +79,7 @@ def test_organization_profile_endpoints() -> None:
         "core_skills": ["Cloud Migration", "Kubernetes", "DevSecOps", "Autonomous AI Agents"],
         "past_performance": ["$12M DHS Cloud Migration", "$8M DoD Edge AI Platform"]
     }
-    update_res = client.put("/api/v1/settings/organization", json=payload)
+    update_res = client.put("/api/v1/settings/organization", json=payload, headers=auth_headers)
     assert update_res.status_code == 200
     updated_data = update_res.json()
     assert updated_data["name"] == "Apex Enterprise Global Corp"
@@ -139,7 +142,8 @@ def test_simulate_endpoint_not_found() -> None:
             "pricing_adjustment_pct": -5.0,
             "cap_sla_penalties": True,
             "partner_certifications": ["FedRAMP High"]
-        }
+        },
+        headers=auth_headers
     )
     assert response.status_code == 404
 

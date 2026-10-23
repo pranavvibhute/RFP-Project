@@ -6,6 +6,7 @@ from fastapi import APIRouter, Depends, HTTPException, Header
 from sqlalchemy.orm import Session
 
 from app.database.session import get_db
+from app.core.security import create_access_token
 from app.models.organization import Organization
 from app.models.user_profile import UserProfile
 from app.models.local_credential import LocalCredential
@@ -78,8 +79,12 @@ def register_user(payload: RegisterPayload, db: Session = Depends(get_db)) -> di
     db.add(cred)
     db.commit()
 
+    access_token = create_access_token(data={"sub": profile.auth_user_id, "email": payload.email, "role": assigned_role})
+
     return {
         "message": "User registered successfully",
+        "access_token": access_token,
+        "token": access_token,
         "user": {
             "id": profile.id,
             "full_name": profile.full_name,
@@ -104,8 +109,11 @@ def login_user(payload: LoginPayload, db: Session = Depends(get_db)) -> dict[str
         raise HTTPException(status_code=404, detail="User profile associated with credentials not found.")
 
     role = profile.role or "member"
+    access_token = create_access_token(data={"sub": profile.auth_user_id, "email": cred.email, "role": role})
     return {
         "message": "Login successful",
+        "access_token": access_token,
+        "token": access_token,
         "user": {
             "id": profile.id,
             "full_name": profile.full_name,

@@ -19,9 +19,7 @@ import {
   AlertCircle,
   ExternalLink
 } from "lucide-react";
-import axios from "axios";
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+import { api } from "@/lib/api";
 
 interface OrgProfile {
   name: string;
@@ -77,8 +75,8 @@ export default function OrganizationPage() {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   useEffect(() => {
-    axios
-      .get(`${API_BASE_URL}/api/v1/settings/organization`)
+    api
+      .get("/api/v1/settings/organization")
       .then((res) => {
         if (res.data) {
           setOrgProfile({
@@ -107,7 +105,7 @@ export default function OrganizationPage() {
     setErrorMsg(null);
 
     try {
-      await axios.put(`${API_BASE_URL}/api/v1/settings/organization`, orgProfile);
+      await api.put("/api/v1/settings/organization", orgProfile);
       setSavedOrgSuccess(true);
       setTimeout(() => setSavedOrgSuccess(false), 3500);
     } catch (err: any) {

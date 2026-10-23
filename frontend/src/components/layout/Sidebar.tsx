@@ -17,6 +17,7 @@ import {
   Layers,
   Building2
 } from "lucide-react";
+import { deleteCookie } from "@/lib/cookie";
 
 export default function Sidebar() {
   const pathname = usePathname();
@@ -110,10 +111,13 @@ export default function Sidebar() {
 
       {/* Footer / Logout Button */}
       <div className="p-4 border-t border-slate-800/80">
-        <Link
-          href="/login"
-          onClick={() => localStorage.removeItem("user")}
-          className="flex items-center justify-center gap-2 w-full bg-white text-[#c8102e] hover:bg-slate-100 font-bold py-2.5 px-4 rounded-xl shadow transition text-xs"
+<Link
+  href="/login"
+  onClick={() => {
+    localStorage.removeItem("user");
+    deleteCookie("auth_token");
+  }}
+  className="flex items-center justify-center gap-2 w-full bg-white text-[#c8102e] hover:bg-slate-100 font-bold py-2.5 px-4 rounded-xl shadow transition text-xs"
         >
           <LogOut className="w-4 h-4 text-[#c8102e]" />
           <span>Logout</span>

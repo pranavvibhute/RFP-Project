@@ -17,10 +17,8 @@ import {
   AlertTriangle
 } from "lucide-react";
 import Link from "next/link";
-import axios from "axios";
+import { api, API_BASE_URL } from "@/lib/api";
 import WhatIfSimulator from "@/components/rfp/WhatIfSimulator";
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
 
 interface Requirement {
   id: number;
@@ -58,8 +56,8 @@ export default function RFPDetailPage({ params }: { params: Promise<{ id: string
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios
-      .get<RFPDetail>(`${API_BASE_URL}/api/v1/rfps/${rfpId}`)
+    api
+      .get<RFPDetail>(`/api/v1/rfps/${rfpId}`)
       .then((res) => setRfp(res.data))
       .catch((err) => console.error("Failed to load RFP detail:", err))
       .finally(() => setLoading(false));
@@ -67,7 +65,7 @@ export default function RFPDetailPage({ params }: { params: Promise<{ id: string
 
   const handleStatusChange = async (reqId: number, newStatus: string) => {
     try {
-      await axios.patch(`${API_BASE_URL}/api/v1/requirements/${reqId}/compliance`, {
+      await api.patch(`/api/v1/requirements/${reqId}/compliance`, {
         status: newStatus,
       });
       if (rfp) {

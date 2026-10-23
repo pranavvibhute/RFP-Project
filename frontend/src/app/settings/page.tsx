@@ -16,9 +16,7 @@ import {
   RefreshCw,
   Scale
 } from "lucide-react";
-import axios from "axios";
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+import { api } from "@/lib/api";
 
 interface SystemSettings {
   primary_model: string;
@@ -59,8 +57,8 @@ export default function SettingsPage() {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   useEffect(() => {
-    axios
-      .get<SystemSettings>(`${API_BASE_URL}/api/v1/settings`)
+    api
+      .get<SystemSettings>("/api/v1/settings")
       .then((res) => {
         if (res.data) {
           setSettings((prev) => ({ ...prev, ...res.data }));
@@ -77,7 +75,7 @@ export default function SettingsPage() {
     setErrorMsg(null);
 
     try {
-      await axios.post(`${API_BASE_URL}/api/v1/settings`, settings);
+      await api.post("/api/v1/settings", settings);
       setSavedSuccess(true);
       setTimeout(() => setSavedSuccess(false), 3500);
     } catch (err: any) {

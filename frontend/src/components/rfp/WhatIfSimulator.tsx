@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import axios from "axios";
+import { api } from "@/lib/api";
 import { 
   Sliders, 
   Sparkles, 
@@ -18,8 +18,6 @@ import {
   X,
   RefreshCw
 } from "lucide-react";
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
 
 interface SimulationResult {
   rfp_id: number;
@@ -99,8 +97,8 @@ export default function WhatIfSimulator({ rfpId, rfpTitle }: WhatIfSimulatorProp
     setError(null);
 
     try {
-      const response = await axios.post<SimulationResult>(
-        `${API_BASE_URL}/api/v1/rfps/${rfpId}/simulate`,
+      const response = await api.post<SimulationResult>(
+        `/api/v1/rfps/${rfpId}/simulate`,
         {
           pricing_adjustment_pct: Number(pricingAdjustment),
           pricing_model: pricingModel,

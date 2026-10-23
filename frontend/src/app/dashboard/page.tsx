@@ -3,10 +3,14 @@ import RFPOverviewSection from "@/components/dashboard/RFPOverviewSection";
 import ComplianceSessionsSection from "@/components/dashboard/ComplianceSessionsSection";
 import RecentExtractionsSection from "@/components/dashboard/RecentExtractionsSection";
 import RevenueBookingsSection from "@/components/dashboard/RevenueBookingsSection";
+import ActionableInsightsSection from "@/components/dashboard/ActionableInsightsSection";
 
 export default function DashboardPage() {
   return (
     <DashboardLayout>
+      {/* Section 0: Actionable Insights */}
+      <ActionableInsightsSection />
+
       {/* Section 1: RFPs & Submissions */}
       <RFPOverviewSection />
 

@@ -11,8 +11,12 @@ class Settings(BaseSettings):
     GEMINI_API_KEY: str
     GEMINI_MODEL: str
 
+    SECRET_KEY: str
+    ALGORITHM: str = "HS256"
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
+
     AI_PRIMARY_PROVIDER: str = "gemini"
-    AI_FALLBACK_PROVIDER: str = "gemini"
+    AI_FALLBACK_PROVIDER: str = "openrouter"
 
     OPEN_ROUTER_API_KEY: str | None = None
     OPENROUTER_API_KEY: str | None = None

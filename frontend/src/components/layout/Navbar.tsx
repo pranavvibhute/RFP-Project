@@ -2,8 +2,10 @@
 
 import { useState } from "react";
 import { usePathname } from "next/navigation";
-import { Calendar, Bell, Radio, ChevronDown } from "lucide-react";
+import { Bell, Radio, ChevronDown } from "lucide-react";
 import Link from "next/link";
+import DateRangePicker from "@/components/ui/DateRangePicker";
+import { deleteCookie } from "@/lib/cookie";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -33,12 +35,6 @@ export default function Navbar() {
 
   const title = getTitle(pathname || "");
 
-  const formattedDate = new Date().toLocaleDateString("en-US", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-  });
-
   return (
     <header className="h-16 bg-white border-b border-slate-200/80 flex items-center justify-between px-6 sticky top-0 z-30 shadow-xs select-none">
       {/* Left Title */}
@@ -53,11 +49,8 @@ export default function Navbar() {
 
       {/* Right User Controls & Widget Toolbar */}
       <div className="flex items-center gap-5 text-xs text-slate-600">
-        {/* Real Dynamic Date Widget */}
-        <div className="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-200 font-medium text-slate-700">
-          <span>{formattedDate}</span>
-          <Calendar className="w-3.5 h-3.5 text-slate-500" />
-        </div>
+        {/* Date Range Picker */}
+        <DateRangePicker />
 
         {/* Status Indicator */}
         <div className="flex items-center gap-1.5 bg-emerald-50 text-emerald-700 font-semibold px-2.5 py-1 rounded-full border border-emerald-200/60 text-[11px]">
@@ -103,10 +96,11 @@ export default function Navbar() {
               </Link>
               <Link
                 href="/login"
-                onClick={() => {
-                  setIsProfileOpen(false);
-                  localStorage.removeItem("user");
-                }}
+onClick={() => {
+  setIsProfileOpen(false);
+  localStorage.removeItem("user");
+  deleteCookie("auth_token");
+}}
                 className="block px-4 py-2 hover:bg-slate-50 text-[#c8102e]"
               >
                 Logout

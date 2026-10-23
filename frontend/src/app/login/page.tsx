@@ -4,13 +4,13 @@ import { useState } from "react";
 import { useToast } from "@/components/ui/ToastProvider";
 import Link from "next/link";
 import { Layers, ArrowRight, Loader2, AlertCircle } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { setCookie } from "@/lib/cookie";
+import { api } from "@/lib/api";
 
 export default function LoginPage() {
-  const router = useRouter();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  
+   
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { addToast } = useToast();
@@ -21,19 +21,27 @@ export default function LoginPage() {
     setError(null);
 
     try {
-      if (username === "user" && password === "pass123") {
-        // Store dummy user details in localStorage
-        localStorage.setItem("user", JSON.stringify({ username: "user" }));
+      const res = await api.post("/api/v1/auth/login", {
+        email: username,
+        password: password,
+      });
+
+      const token = res.data.access_token || res.data.token;
+      if (token) {
+        setCookie("auth_token", token, 7);
+        localStorage.setItem("auth_token", token);
+        localStorage.setItem("user", JSON.stringify({ username }));
         addToast("Login successful! Redirecting...", "success");
-        router.push("/dashboard");
+        window.location.href = "/dashboard";
       } else {
-        setError("Invalid username or password.");
-        addToast("Invalid username or password.", "error");
+        setError("Invalid login response.");
+        addToast("Invalid login response.", "error");
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error("Login failed:", err);
-      setError("An unexpected error occurred.");
-      addToast("An unexpected error occurred.", "error");
+      const msg = err.response?.data?.detail || "Invalid username or password.";
+      setError(msg);
+      addToast(msg, "error");
     } finally {
       setLoading(false);
     }
@@ -62,11 +70,12 @@ export default function LoginPage() {
 
         <form onSubmit={handleLogin} className="space-y-4 text-xs">
           <div className="space-y-1">
-            <label className="font-bold text-slate-700">Username</label>
+            <label className="font-bold text-slate-700">Email Address / Username</label>
             <input
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
+              placeholder="e.g. admin@company.com"
               required
               className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 font-medium text-slate-900 focus:outline-none focus:border-[#c8102e]"
             />
@@ -78,6 +87,7 @@ export default function LoginPage() {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              placeholder="••••••••"
               required
               className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 font-medium text-slate-900 focus:outline-none focus:border-[#c8102e]"
             />
@@ -99,7 +109,41 @@ export default function LoginPage() {
           </button>
         </form>
 
-        <div className="text-center text-xs text-slate-500 font-medium pt-2">
+        {/* Quick-Fill Trial Credentials */}
+        <div className="p-3.5 bg-slate-50 rounded-2xl border border-slate-200/80 space-y-2 text-xs">
+          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block text-center">
+            Click to Auto-Fill Trial Credentials
+          </span>
+          <div className="grid grid-cols-2 gap-2">
+            <button
+              type="button"
+              onClick={() => {
+                setUsername("admin@company.com");
+                setPassword("admin123");
+              }}
+              className="p-2.5 bg-white hover:bg-slate-100 border border-slate-200 rounded-xl text-left transition shadow-2xs cursor-pointer"
+            >
+              <div className="font-bold text-slate-800 text-[11px]">Administrator</div>
+              <div className="text-[10px] text-slate-500 font-mono truncate">admin@company.com</div>
+              <div className="text-[9px] text-emerald-600 font-semibold mt-0.5">pass: admin123</div>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                setUsername("test@test.com");
+                setPassword("test123");
+              }}
+              className="p-2.5 bg-white hover:bg-slate-100 border border-slate-200 rounded-xl text-left transition shadow-2xs cursor-pointer"
+            >
+              <div className="font-bold text-slate-800 text-[11px]">Team Member</div>
+              <div className="text-[10px] text-slate-500 font-mono truncate">test@test.com</div>
+              <div className="text-[9px] text-emerald-600 font-semibold mt-0.5">pass: test123</div>
+            </button>
+          </div>
+        </div>
+
+        <div className="text-center text-xs text-slate-500 font-medium pt-1">
           Don&apos;t have an account?{" "}
           <Link href="/register" className="font-bold text-[#c8102e] hover:underline">
             Register here

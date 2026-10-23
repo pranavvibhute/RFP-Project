@@ -4,9 +4,8 @@ import { useState } from "react";
 import Link from "next/link";
 import { Layers, ArrowRight, Loader2, AlertCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
-import axios from "axios";
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+import { setCookie } from "@/lib/cookie";
+import { api } from "@/lib/api";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -23,12 +22,16 @@ export default function RegisterPage() {
     setError(null);
 
     try {
-      const res = await axios.post(`${API_BASE_URL}/api/v1/auth/register`, {
+      const res = await api.post("/api/v1/auth/register", {
         full_name: fullName,
         email,
         password,
       });
-      // Store user details in localStorage
+
+      const token = res.data.access_token || res.data.token;
+      if (token) {
+        setCookie("auth_token", token, 7);
+      }
       localStorage.setItem("user", JSON.stringify(res.data.user));
       router.push("/dashboard");
     } catch (err: any) {

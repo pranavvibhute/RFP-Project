@@ -4,9 +4,7 @@ import { useEffect, useState } from "react";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import { FileText, Search, Plus, Filter, ArrowUpRight, Clock, ShieldAlert, Loader2 } from "lucide-react";
 import Link from "next/link";
-import axios from "axios";
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+import { api } from "@/lib/api";
 
 interface RFPItem {
   id: number;
@@ -33,7 +31,7 @@ export default function RFPsPage() {
 
   const fetchRFPs = async () => {
     try {
-      const res = await axios.get<RFPItem[]>(`${API_BASE_URL}/api/v1/rfps`);
+      const res = await api.get<RFPItem[]>("/api/v1/rfps");
       setRfps(res.data);
     } catch (err) {
       console.error("Failed to fetch RFPs:", err);

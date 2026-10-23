@@ -19,9 +19,7 @@ import {
   ArrowUpRight
 } from "lucide-react";
 import Link from "next/link";
-import axios from "axios";
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+import { api, API_BASE_URL } from "@/lib/api";
 
 interface Requirement {
   category: string;
@@ -139,7 +137,7 @@ export default function UploadPage() {
     const startTime = performance.now();
 
     try {
-      const response = await axios.post<AnalysisResponse>(`${API_BASE_URL}/api/v1/analyze`, formData, {
+      const response = await api.post<AnalysisResponse>("/api/v1/analyze", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 

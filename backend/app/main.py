@@ -1,7 +1,7 @@
 import pathlib
-from fastapi import FastAPI
+from fastapi import FastAPI, Request, status
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse
+from fastapi.responses import JSONResponse, HTMLResponse
 
 from app.core.config import settings
 from app.core.logging import setup_logging, get_logger
@@ -24,13 +24,90 @@ app = FastAPI(
     version="0.2.0",
 )
 
-# CORS middleware for local development
+# Auth middleware - protects all routes except exempt paths
+EXEMPT_PATHS = {
+    "/",
+    "/docs",
+    "/openapi.json",
+    "/api/v1/auth/register",
+    "/api/v1/auth/login",
+    "/api/v1/auth/me",
+    "/api/v1/health",
+    "/health",
+    "/favicon.ico",
+    "/api/v1/analyze",
+    "/analyze",
+    "/api/v1/risks",
+    "/api/v1/analysis/metrics",
+}
+
+
+@app.middleware("http")
+async def auth_middleware(request: Request, call_next):
+    # Preflight OPTIONS requests for CORS must not be challenged for authentication
+    if request.method == "OPTIONS":
+        return await call_next(request)
+
+    path = request.url.path
+    if path in EXEMPT_PATHS or path.startswith("/static") or path.startswith("/reports/"):
+        return await call_next(request)
+
+    # Check Authorization header first (for API calls)
+    auth_header = request.headers.get("authorization")
+    token = None
+    if auth_header and auth_header.startswith("Bearer "):
+        token = auth_header.split(" ", 1)[1]
+    else:
+        # Fallback: check auth_token cookie (for page navigations)
+        cookie_token = request.cookies.get("auth_token")
+        if cookie_token:
+            token = cookie_token
+
+    if not token:
+        response = JSONResponse(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            content={"detail": "Not authenticated"},
+        )
+        response.headers["Access-Control-Allow-Origin"] = "*"
+        response.headers["Access-Control-Allow-Headers"] = "*"
+        response.headers["Access-Control-Allow-Methods"] = "*"
+        return response
+
+    from app.core.security import decode_token
+    payload = decode_token(token)
+    if payload is None:
+        response = JSONResponse(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            content={"detail": "Invalid or expired token"},
+        )
+        response.headers["Access-Control-Allow-Origin"] = "*"
+        response.headers["Access-Control-Allow-Headers"] = "*"
+        response.headers["Access-Control-Allow-Methods"] = "*"
+        return response
+
+    request.state.user = payload
+    return await call_next(request)
+
+
+# CORS middleware - registered AFTER auth_middleware so it wraps it as the outermost layer!
+origins = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "http://192.168.1.2:3000",
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=origins,
+    allow_origin_regex=r"^https?://(localhost|127\.0\.0\.1|192\.168\.\d+\.\d+)(:\d+)?$",
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=["*"],
 )
+
 
 # Register v1 domain API routers
 app.include_router(health_router, prefix="/api/v1", tags=["Health"])

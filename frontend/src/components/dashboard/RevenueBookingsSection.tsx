@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { DollarSign, ArrowRight, FileEdit, FileText, CheckCircle } from "lucide-react";
+import { DollarSign, ArrowRight, FileEdit, FileText, CheckCircle, Loader2, AlertCircle, RefreshCw } from "lucide-react";
 import {
   ComposedChart,
   Bar,
@@ -12,9 +12,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import Link from "next/link";
-import axios from "axios";
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+import { api } from "@/lib/api";
 
 interface PipelineData {
   month: string;
@@ -38,30 +36,78 @@ interface DashboardMetrics {
 
 export default function RevenueBookingsSection() {
   const [metrics, setMetrics] = useState<DashboardMetrics | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchMetrics = async () => {
+    try {
+      const res = await api.get<DashboardMetrics>("/api/v1/rfps/dashboard");
+      setMetrics(res.data);
+    } catch (err) {
+      console.error("Failed to load dashboard metrics:", err);
+      setError("Failed to load pipeline data");
+    }
+  };
 
   useEffect(() => {
-    axios
-      .get<DashboardMetrics>(`${API_BASE_URL}/api/v1/rfps/dashboard`)
-      .then((res) => setMetrics(res.data))
-      .catch((err) => console.error("Failed to load dashboard metrics:", err));
+    setLoading(true);
+    setError(null);
+    fetchMetrics();
   }, []);
 
-  const defaultRevenueData = [
-    { month: "Jan", pipeline: 400, target: 480 },
-    { month: "Feb", pipeline: 600, target: 720 },
-    { month: "Mar", pipeline: 800, target: 960 },
-    { month: "Apr", pipeline: 700, target: 840 },
-    { month: "May", pipeline: 1200, target: 1440 },
-    { month: "Jun", pipeline: 900, target: 1080 },
-    { month: "Jul", pipeline: 1500, target: 1800 },
-  ];
+  const handleRefresh = () => {
+    setLoading(true);
+    setError(null);
+    fetchMetrics();
+  };
+
+  if (loading && !metrics) {
+    return (
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+        <div className="bg-white p-5 rounded-2xl border border-slate-200 animate-pulse">
+          <div className="h-4 w-1/3 bg-slate-200 rounded mb-4" />
+          <div className="h-48 w-full bg-slate-200 rounded" />
+        </div>
+        <div className="bg-white p-5 rounded-2xl border border-slate-200 animate-pulse">
+          <div className="h-4 w-1/3 bg-slate-200 rounded mb-4" />
+          <div className="h-48 w-full bg-slate-200 rounded" />
+        </div>
+        <div className="bg-white p-5 rounded-2xl border border-slate-200 animate-pulse">
+          <div className="h-4 w-1/3 bg-slate-200 rounded mb-4" />
+          <div className="h-48 w-full bg-slate-200 rounded" />
+        </div>
+      </div>
+    );
+  }
+
+  if (error && !metrics) {
+    return (
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+        <div className="lg:col-span-3 bg-white p-8 rounded-2xl border border-slate-200 text-center">
+          <AlertCircle className="w-12 h-12 text-rose-500 mx-auto mb-3" />
+          <h3 className="text-lg font-semibold text-slate-900 mb-1">Unable to load pipeline data</h3>
+          <p className="text-sm text-slate-500 mb-4">{error}</p>
+          <button
+            onClick={handleRefresh}
+            className="inline-flex items-center gap-2 px-4 py-2 bg-[#c8102e] text-white rounded-lg font-medium hover:bg-[#a00c24] transition"
+          >
+            <RefreshCw className="w-4 h-4" />
+            <span>Retry</span>
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   const chartData = metrics?.revenue_chart_data && metrics.revenue_chart_data.length > 0
     ? metrics.revenue_chart_data
-    : defaultRevenueData;
+    : [];
 
   const incompleteProfiles = metrics?.incomplete_profiles || [];
   const recentRfps = metrics?.recent_extractions || [];
+
+  const hasPipelineData = chartData.length > 0 && chartData.some(d => d.pipeline > 0);
+  const hasIncompleteProfiles = incompleteProfiles.length > 0;
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
@@ -77,25 +123,33 @@ export default function RevenueBookingsSection() {
             </h3>
           </div>
           <span className="text-xs font-black text-slate-900">
-            {metrics?.total_pipeline || "$2.45M"}
+            {metrics?.total_pipeline || "$0"}
           </span>
         </div>
 
         <p className="text-[11px] text-slate-400 font-medium">
-          Total estimated budget aggregated from all extracted customer proposals in SQLite.
+          Total estimated budget aggregated from all extracted customer proposals.
         </p>
 
-        <div className="h-48 w-full pt-2">
-          <ResponsiveContainer width="100%" height="100%">
-            <ComposedChart data={chartData} margin={{ top: 10, right: 0, left: -25, bottom: 0 }}>
-              <XAxis dataKey="month" tick={{ fontSize: 9, fill: "#64748b" }} axisLine={false} tickLine={false} />
-              <YAxis tick={{ fontSize: 9, fill: "#64748b" }} axisLine={false} tickLine={false} />
-              <Tooltip />
-              <Bar dataKey="pipeline" fill="#c8102e" radius={[2, 2, 0, 0]} barSize={6} name="Pipeline ($K)" />
-              <Line type="monotone" dataKey="target" stroke="#111625" strokeWidth={1.5} dot={false} name="Target ($K)" />
-            </ComposedChart>
-          </ResponsiveContainer>
-        </div>
+        {hasPipelineData ? (
+          <div className="h-48 w-full pt-2">
+            <ResponsiveContainer width="100%" height="100%">
+              <ComposedChart data={chartData} margin={{ top: 10, right: 0, left: -25, bottom: 0 }}>
+                <XAxis dataKey="month" tick={{ fontSize: 9, fill: "#64748b" }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fontSize: 9, fill: "#64748b" }} axisLine={false} tickLine={false} />
+                <Tooltip contentStyle={{ backgroundColor: "#111625", border: "none", borderRadius: "8px" }} />
+                <Bar dataKey="pipeline" fill="#c8102e" radius={[2, 2, 0, 0]} barSize={6} name="Pipeline ($K)" />
+                <Line type="monotone" dataKey="target" stroke="#111625" strokeWidth={1.5} dot={false} name="Target ($K)" />
+              </ComposedChart>
+            </ResponsiveContainer>
+          </div>
+        ) : (
+          <div className="h-48 w-full flex flex-col items-center justify-center text-slate-400">
+            <DollarSign className="w-10 h-10 mb-2 opacity-50" />
+            <p className="text-xs font-medium">No pipeline data available</p>
+            <p className="text-[10px] mt-1">Pipeline appears after RFPs with budgets are analyzed</p>
+          </div>
+        )}
 
         <div className="flex items-center justify-center gap-3 text-[10px] font-medium text-slate-600 pt-1">
           <div className="flex items-center gap-1">
@@ -134,7 +188,7 @@ export default function RevenueBookingsSection() {
               <div key={rfp.id} className="p-2 hover:bg-slate-50 rounded-xl border border-slate-100 flex items-center justify-between transition">
                 <div className="min-w-0 flex-1">
                   <div className="font-bold text-slate-800 text-[11px] truncate">{rfp.title}</div>
-                  <div className="text-[10px] text-slate-400 truncate">{rfp.customer} · {rfp.date}</div>
+                  <div className="text-[10px] text-slate-400 truncate">{rfp.customer_name || rfp.customer} · {rfp.date || rfp.uploaded_at}</div>
                 </div>
                 <div className="ml-3 shrink-0 flex flex-col items-end">
                   <span className={`inline-block px-1.5 py-0.5 rounded text-[9px] font-bold ${
@@ -161,12 +215,7 @@ export default function RevenueBookingsSection() {
         </div>
 
         <div className="space-y-3 max-h-[220px] overflow-y-auto pr-1">
-          {incompleteProfiles.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-8 text-slate-400">
-              <CheckCircle className="w-8 h-8 text-emerald-500 mb-1" />
-              <p className="text-xs font-medium">All profiles 100% complete!</p>
-            </div>
-          ) : (
+          {hasIncompleteProfiles ? (
             incompleteProfiles.map((profile) => (
               <div key={profile.id} className="flex items-center gap-3 p-1.5 hover:bg-slate-50 rounded-xl transition">
                 <div className="w-7 h-7 rounded-lg bg-[#c8102e]/10 text-[#c8102e] flex items-center justify-center font-bold text-xs shrink-0">
@@ -196,6 +245,11 @@ export default function RevenueBookingsSection() {
                 </Link>
               </div>
             ))
+          ) : (
+            <div className="flex flex-col items-center justify-center py-8 text-slate-400">
+              <CheckCircle className="w-8 h-8 text-emerald-500 mb-1" />
+              <p className="text-xs font-medium">All profiles 100% complete!</p>
+            </div>
           )}
         </div>
       </div>
