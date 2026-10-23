@@ -16,7 +16,7 @@ class UpdateComplianceRequest(BaseModel):
 
 
 @router.get("")
-def list_requirements(db: Session = Depends(get_db)) -> list[dict[str, Any]]:
+def list_requirements(db: Session = Depends(get_db)) -> dict[str, Any]:
     """List all extracted requirements across all RFPs stored in database."""
     records = (
         db.query(Requirement, Analysis, RFP)
@@ -38,7 +38,7 @@ def list_requirements(db: Session = Depends(get_db)) -> list[dict[str, Any]]:
             "status": req.status or ("Verified Compliant" if (req.priority or "").lower() != "high" else "Review Required"),
         })
 
-    return results
+    return {"requirements": results}
 
 
 @router.patch("/{requirement_id}/compliance")

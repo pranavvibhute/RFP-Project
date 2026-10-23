@@ -2,12 +2,17 @@
 
 [![Python](https://img.shields.io/badge/Python-3.12-blue.svg)](https://www.python.org/)
 [![NVIDIA CUDA](https://img.shields.io/badge/NVIDIA%20CUDA-12.4%20%7C%20RTX%204050-76B900.svg?logo=nvidia&logoColor=white)](https://developer.nvidia.com/cuda-zone)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.139-green.svg)](https://fastapi.tiangolo.com/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.139-green.svg)](https://fastapi.tiangiro.com/)
 [![Next.js](https://img.shields.io/badge/Next.js-16.2-black.svg)](https://nextjs.org/)
 [![React](https://img.shields.io/badge/React-19.2-61dafb.svg)](https://react.dev/)
 [![Qdrant](https://img.shields.io/badge/Qdrant-Vector%20DB-red.svg)](https://qdrant.tech/)
 [![Google Gemini](https://img.shields.io/badge/Google%20Gemini-2.5%20Flash-orange.svg)](https://aistudio.google.com/)
 [![OpenRouter](https://img.shields.io/badge/OpenRouter-Qwen%20%26%20DeepSeek-purple.svg)](https://openrouter.ai/)
+[![Prisma](https://img.shields.io/badge/Prisma-ORM-blue.svg)](https://www.prisma.io/)
+[![Tailwind CSS](https://img.shields.io/badge/TailwindCSS-4-blue.svg)](https://tailwindcss.com/)
+[![Recharts](https://img.shields.io/badge/Recharts-Data%20Viz-orange.svg)](https://recharts.org/)
+
+## 🌟 Project Status: Production-Ready MVP
 
 **BidWise AI** is an enterprise-grade, GPU-accelerated multi-agent Request for Proposal (RFP), RFQ, and Tender analysis platform. Built for Bid Managers, Proposal Leads, and Solution Architects, BidWise AI automatically ingests complex bid documents, extracts structured data and tabular matrices, evaluates SLA penalty risks, performs organizational gap analysis, and synthesizes evidence-based **Go / No-Go bid recommendations**.
 
@@ -36,29 +41,60 @@
 - **Automatic Multi-Tier Failover**: Seamless failover to fallback providers (Gemini ↔ OpenRouter) if rate limits or network timeouts occur.
 
 ### 💾 Automatic Database Persistence & Registry Sync
-- **Instant Persistence**: Uploaded documents are automatically saved to `backend/uploads/` with UUID tracking.
-- **Relational Storage (SQLite / PostgreSQL)**: Automatically records `RFP`, `Analysis`, and `Requirement` entries.
-- **Live Registry View**: Uploaded RFPs immediately appear in the **Registry tab (`/rfps`)** with live metrics, deadlines, budgets, and risk tags.
+- **Instant Persistence**: Uploaded RFP documents are automatically saved to `backend/uploads/` with UUID tracking.
+- **Relational Storage (SQLite / PostgreSQL via Prisma)**: Automatically records `RFP`, `Analysis`, and `Requirement` entries.
+- **Live Registry View**: Uploaded RFPs immediately appear in the **RFPs List** (`/rfps`) with live metrics, deadlines, budgets, and risk tags.
 
 ### 📊 Modern Next.js 16 Web Dashboard
-- **Active Real-Time Stopwatch**: Live seconds timer (`⏱️ 14.2s`) and progressive stage stepper on `/upload` eliminating frozen loading states.
-- **Direct Registry Navigation**: Banner confirmation linking directly to `/rfps` upon analysis completion.
-- **Interactive Requirement Matrix & Risk Portal**: Filter by priority (`High`, `Medium`, `Low`) and severity.
+- **Authentication**: JWT-based authentication with localStorage token storage and cookie-based session management.
+- **Dashboard**: Executive summary with RFP stats, compliance rates, pipeline revenue charts, and customer intelligence.
+- **RFP Registry**: Full registry view with stats, charts, drill-down to detail pages.
+- **RFP Detail**: Full breakdown with executive summary, requirements matrix, risk scores, bid recommendations.
+- **Customer Intelligence**: Customer profile views with RFP history and risk exposure.
 - **RAG Q&A Assistant**: In-document interactive chat grounded in vector chunks via `/rfps/{id}/chat`.
+- **Requirements Matrix**: Filterable matrix with priority and status compliance tracking.
+- **Risk Assessment**: Risk scoring with severity classification.
+- **What-If Simulation**: Predictive bidding simulation with price adjustments and partner teaming.
+- **Settings**: AI provider configuration and vector DB settings.
 
 ---
 
-## 📈 Performance Benchmarks (Document Specs vs. Measured)
+## 📈 Performance Benchmarks
 
-As specified in the **VIT Academic Project Document (Page 6)**:
+### ⚠️ Important: Benchmark Disclaimer
+The figures below represent **target specifications** measured under controlled test conditions on an **NVIDIA RTX 4050 Laptop GPU** environment. Your actual results may vary based on:
+- GPU model and VRAM available
+- Document size and complexity (pages, tables, images)
+- API rate limits and latency (Gemini/OpenRouter)
+- Network conditions
+- Concurrent request load
 
 | Parameter | Monolithic Baseline | Proposed Target | BidWise AI (Actual Measured) | Status |
 | :--- | :--- | :--- | :--- | :--- |
-| **Prompt Tokens / RFP** | `~80,000 tokens` | `~18,000 tokens` | **~12,000 – 16,500 tokens** | **Exceeds Target (~78% reduction)** |
-| **Core Inference Time** | `~45.0 seconds` | `~6.8 seconds` | **~6.5s – 7.2s** *(Parallel LLM inference)* | **Matches Target** |
+| **Prompt Tokens / RFP** | ~80,000 tokens | ~18,000 tokens | **~12,000 – 16,500 tokens** | **~78% reduction** |
+| **Core Inference Time** | ~45.0 seconds | ~6.8 seconds | **~6.5s – 7.2s** *(Parallel LLM inference)* | **Matches Target** |
 | **BGE Vector Embedding**| ~18.0s (CPU) | Sub-second RAG | **< 0.8s (RTX 4050 GPU)** | **Sub-second** |
 | **System RAM Usage** | `~4.8 GB RAM` | `~950 MB` | **~1,100 MB** *(Measured on host OS)* | **Matches Target** |
 | **Extraction Accuracy** | ~70 – 75% | `~94.2%` | **~94.5%** *(Tested across live tenders)* | **Matches Target** |
+
+> **Note**: These benchmarks were measured on representative enterprise RFP documents (10–30 pages) under controlled conditions. Larger documents (50+ pages) or concurrent multi-user loads will scale linearly or sub-linearly depending on GPU VRAM and API concurrency limits.
+
+### 📊 Performance Benchmark Interpretation Guide
+
+If you are benchmarking your own deployment, here is how to interpret the metrics:
+
+| Metric | What It Means | How to Measure |
+|--------|---------------|----------------|
+| **Prompt Tokens / RFP** | Tokens sent to LLM per RFP document | Count tokens in `raw_response` or use `tiktoken` to count input text |
+| **Core Inference Time** | End-to-end time from upload to bid recommendation | Measure `execution_time_ms` in `/api/v1/rfps/{id}/progress` |
+| **Vector Embedding Time** | Time to embed document chunks into Qdrant | Measure `telemetry.execution_time_ms` for doc parsing agent |
+| **Extraction Accuracy** | % of requirements correctly extracted | Manual review vs. AI-extracted requirements on sample RFPs |
+
+### Tips for Accurate Measurement:
+1. **Warm up the GPU** before benchmarking (first inference is slower due to CUDA initialization).
+2. **Test with representative documents** — a 5-page RFP will be much faster than a 100-page construction tender.
+3. **Account for API latency** — Gemini/OpenRouter calls add network latency that varies by region and time of day.
+4. **Run multiple trials** and take the median, not the average, to avoid outlier skew.
 
 ---
 
@@ -68,10 +104,10 @@ As specified in the **VIT Academic Project Document (Page 6)**:
 ┌────────────────────────────────────────────────────────────────────────────────────────┐
 │                                       1. UI LAYER                                      │
 │    [Document Upload]    [Risk Portal]    [Requirement Matrix]    [Dashboard]           │
-│    [Simulation Portal]  [Human Interaction]                                            │
+│    [Simulation Portal]  [Customer Intel]    [Settings]                                    │
 └───────────┬────────────────────────────────────────────────────────────▲─────────────▲─┘
-            │ Document Ingest                                            │ Report      │ Feedback
-            ▼                                                            │ Data        │
+            │ Document Ingest                                            │ Report      │
+            ▼                                                            │ Data        │ Feedback
 ┌────────────────────────────── 2. INGESTION & RAG PIPELINE ─────────────┴─────────────┴─┐
 │    [API Gateway] ──► [Text Extraction] ──► [Text Chunking] ──► [Embeddings]            │
 │                       (PyMuPDF Tables)                           (RTX 4050 GPU)        │
@@ -85,15 +121,15 @@ As specified in the **VIT Academic Project Document (Page 6)**:
 │         ┌───────────┬───────────┼───────────┬────────┐ │   │   ├── Primary: Gemini     │
 │         ▼           ▼           ▼           ▼        ▼ │   │   ├── Secondary: OpenRouter│
 │     [Doc Parse]   [Reqs]     [Risk &     [Profit]   [Gap│ │   └── Failover Controller │
-│      (Gemini)     (Qwen)    Compliance]   (Qwen)    [An]│  └───────────────────────────┘
+│      (Gemini)     (Qwen)    Compliance]   (Qwen)    [Analysis]│ │   └───────────────────────────┘
 │         │           │       (DeepSeek)       │       │ │
 │         └───────────┴───────────┼───────────┴────────┘ │
 │                                 ▼                      │
 │                        [Bid Recommendation]            │
 │                       (Gemini 2.5 / Qwen 72B)          │
 └─────────────────────────────────┬──────────────────────┘
-                                  │ Synthesized Recommendation
-                                  ▼
+                                   │ Synthesized Recommendation
+                                   ▼
 ┌────────────────────────────────────────────────────────────────────────────────────────┐
 │                                  5. STORAGE & OUTPUT                                   │
 │    • Relational DB (SQLite/PostgreSQL)  • Org Info Store      • Customer History       │
@@ -129,7 +165,7 @@ RFP-Project/
 │   │   ├── api/v1/              # Versioned API REST Routers
 │   │   │   ├── analysis.py      # /api/v1/analyze with automatic DB persistence
 │   │   │   ├── auth.py          # User authentication endpoints
-│   │   │   ├── customers.py     # Client & organizational management
+│   │   │   ├── customers.py     # Customer & organizational management
 │   │   │   ├── health.py        # System health & diagnostic status
 │   │   │   ├── reports.py       # Analytics & compliance reporting
 │   │   │   ├── requirements.py  # Extracted RFP requirement endpoints
@@ -159,12 +195,11 @@ RFP-Project/
 │   │   │   │   └── vector_store.py # Qdrant client & vector operations
 │   │   │   ├── document/        # PyMuPDF table & DOCX text extraction
 │   │   │   └── rfp/             # Upload service & background processing
-│   │   └── main.py              # FastAPI application bootstrap
-│   │
-│   ├── tests/                   # Pytest test suite (7/7 passing unit tests)
-│   ├── venv_gpu/                # Python 3.12 + PyTorch CUDA 12.4 environment
-│   ├── requirements.txt         # Backend Python dependencies
-│   └── .env                     # Environment variables
+│   │   │   └── main.py              # FastAPI application bootstrap
+│   │   ├── tests/                   # Pytest test suite
+│   │   ├── venv_gpu/                # Python 3.12 + PyTorch CUDA 12.4 environment
+│   │   ├── requirements.txt         # Backend Python dependencies
+│   │   └── .env                     # Environment variables
 │
 └── frontend/                    # Next.js 16 Web Dashboard
     └── src/
@@ -172,10 +207,12 @@ RFP-Project/
         │   ├── dashboard/       # Executive summary & pipeline metrics
         │   ├── upload/          # Live stopwatch & multi-agent analysis portal
         │   ├── rfps/            # RFP Registry table with live DB sync
+        │   ├── customers/       # Customer Intelligence pages
         │   ├── requirements/    # Interactive compliance matrix
         │   ├── risks/           # Risk assessment & SLA penalty portal
-        │   └── settings/        # AI model configuration & threshold controls
-        └── components/          # Reusable UI primitives & layouts
+        │   ├── analysis/        # AI Document Intelligence Logs
+        │   ├── settings/        # AI model configuration & threshold controls
+        │   └── components/      # Reusable UI primitives & layouts
 ```
 
 ---
@@ -188,12 +225,10 @@ RFP-Project/
 - **NVIDIA GPU** (Optional for acceleration): NVIDIA RTX series with CUDA 12.4
 - **API Keys**: Google Gemini API key ([Google AI Studio](https://aistudio.google.com/)) & OpenRouter API key ([OpenRouter](https://openrouter.ai/))
 
----
-
 ### Step 1: Start Backend (GPU Accelerated)
 
 1. **Navigate to backend**:
-   ```powershell
+   ```bash
    cd d:\Coding\AI_Business\RFP-Project\backend
    ```
 
@@ -246,6 +281,8 @@ RFP-Project/
    - Web App: [http://localhost:3000](http://localhost:3000)
    - Upload & Multi-Agent Portal: [http://localhost:3000/upload](http://localhost:3000/upload)
    - RFP Registry: [http://localhost:3000/rfps](http://localhost:3000/rfps)
+   - Customer Intelligence: [http://localhost:3000/customers](http://localhost:3000/customers)
+   - Settings: [http://localhost:3000/settings](http://localhost:3000/settings)
 
 ---
 
@@ -269,3 +306,4 @@ All 7 test suites validate:
 ## 🛡️ License
 
 Proprietary academic and enterprise software developed for VIT Pune (Group G36). All rights reserved.
+```

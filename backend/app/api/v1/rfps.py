@@ -281,6 +281,9 @@ def get_dashboard_overview(
     def parse_budget_val(b_str: str | None) -> float:
         if not b_str:
             return 0.0
+        b_lower = b_str.lower().strip()
+        if b_lower in ("not specified", "tbd", "tba", "n/a", "na"):
+            return 0.0
         cleaned = "".join(c for c in b_str if c.isdigit() or c in ".kmKM")
         if not cleaned:
             return 0.0
@@ -342,12 +345,28 @@ def get_dashboard_overview(
                 "progress": pct
             })
 
-    # 4. Compliance Rates
-    compliant_count = int(len(requirements) * 0.76)
-    review_count = int(len(requirements) * 0.18)
-    failed_count = len(requirements) - compliant_count - review_count
+    # 4. Compliance Rates - Calculate from actual requirement statuses
+    compliant_count = 0
+    review_count = 0
+    failed_count = 0
     
-    compliance_rate = 76.5 if len(requirements) > 0 else 100.0
+    for req in requirements:
+        status = (req.status or "").lower()
+        if "verified" in status or "compliant" in status:
+            compliant_count += 1
+        elif "review" in status:
+            review_count += 1
+        elif "non" in status or "failed" in status:
+            failed_count += 1
+        else:
+            # Default classification based on priority
+            if (req.priority or "").lower() == "high":
+                review_count += 1
+            else:
+                compliant_count += 1
+    
+    total_reqs = len(requirements)
+    compliance_rate = round((compliant_count / total_reqs * 100), 1) if total_reqs > 0 else 100.0
 
     return {
         "recent_extractions": recent_extractions,

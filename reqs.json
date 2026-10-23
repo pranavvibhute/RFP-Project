@@ -1,0 +1,1164 @@
+﻿{
+    "requirements":  [
+                         {
+                             "id":  1,
+                             "category":  "Mandatory",
+                             "priority":  "High",
+                             "requirement":  "Solid customer base utilizing the proposed solution within Washington State, including cities similar in size and service delivery to Snoqualmie.",
+                             "rfp_id":  1,
+                             "rfp_title":  "Rfp For Erp Software And Implementation Services Posted 02 01 2020 RFP",
+                             "customer_name":  "City of Snoqualmie",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  2,
+                             "category":  "Mandatory",
+                             "priority":  "High",
+                             "requirement":  "Successful experience implementing the proposed software in Washington to fully comply with BARS tracking and reporting requirements.",
+                             "rfp_id":  1,
+                             "rfp_title":  "Rfp For Erp Software And Implementation Services Posted 02 01 2020 RFP",
+                             "customer_name":  "City of Snoqualmie",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  3,
+                             "category":  "Mandatory",
+                             "priority":  "High",
+                             "requirement":  "Meet all functional and technical requirements stated within this RFP using commercial off-the-shelf software.",
+                             "rfp_id":  1,
+                             "rfp_title":  "Rfp For Erp Software And Implementation Services Posted 02 01 2020 RFP",
+                             "customer_name":  "City of Snoqualmie",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  4,
+                             "category":  "Technical",
+                             "priority":  "High",
+                             "requirement":  "The successful supplier shall be responsible for the final City approved design, installation, and implementation of the ERP system including development of user acceptance testing, system integration and connectivity to existing resources.",
+                             "rfp_id":  1,
+                             "rfp_title":  "Rfp For Erp Software And Implementation Services Posted 02 01 2020 RFP",
+                             "customer_name":  "City of Snoqualmie",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  5,
+                             "category":  "Technical",
+                             "priority":  "High",
+                             "requirement":  "Leverage Microsoft-centric architecture supporting Microsoft SQL Server database and the Cityâs technology direction (if on-premise solution is proposed).",
+                             "rfp_id":  1,
+                             "rfp_title":  "Rfp For Erp Software And Implementation Services Posted 02 01 2020 RFP",
+                             "customer_name":  "City of Snoqualmie",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  6,
+                             "category":  "Technical",
+                             "priority":  "Medium",
+                             "requirement":  "Integration with a budgeting analytics and planning tool to be selected as part of the RFP process.",
+                             "rfp_id":  1,
+                             "rfp_title":  "Rfp For Erp Software And Implementation Services Posted 02 01 2020 RFP",
+                             "customer_name":  "City of Snoqualmie",
+                             "status":  "Verified Compliant"
+                         },
+                         {
+                             "id":  7,
+                             "category":  "Technical",
+                             "priority":  "Medium",
+                             "requirement":  "A highly intuitive system with minimal training from a user perspective in order to improve cross-departmental performance and efficiency.",
+                             "rfp_id":  1,
+                             "rfp_title":  "Rfp For Erp Software And Implementation Services Posted 02 01 2020 RFP",
+                             "customer_name":  "City of Snoqualmie",
+                             "status":  "Verified Compliant"
+                         },
+                         {
+                             "id":  8,
+                             "category":  "Technical",
+                             "priority":  "Medium",
+                             "requirement":  "Easy access to data for report and query generation without the need for a SQL specialist.",
+                             "rfp_id":  1,
+                             "rfp_title":  "Rfp For Erp Software And Implementation Services Posted 02 01 2020 RFP",
+                             "customer_name":  "City of Snoqualmie",
+                             "status":  "Verified Compliant"
+                         },
+                         {
+                             "id":  9,
+                             "category":  "Technical",
+                             "priority":  "Medium",
+                             "requirement":  "User-friendly mobile technology for Timekeeping and Payroll employee self-service.",
+                             "rfp_id":  1,
+                             "rfp_title":  "Rfp For Erp Software And Implementation Services Posted 02 01 2020 RFP",
+                             "customer_name":  "City of Snoqualmie",
+                             "status":  "Verified Compliant"
+                         },
+                         {
+                             "id":  10,
+                             "category":  "Technical",
+                             "priority":  "Medium",
+                             "requirement":  "Integration with ESRI ArcGIS, MaintStar, TRAKit, and external payment processors.",
+                             "rfp_id":  1,
+                             "rfp_title":  "Rfp For Erp Software And Implementation Services Posted 02 01 2020 RFP",
+                             "customer_name":  "City of Snoqualmie",
+                             "status":  "Verified Compliant"
+                         },
+                         {
+                             "id":  11,
+                             "category":  "Operational",
+                             "priority":  "Medium",
+                             "requirement":  "Cost and support quality for ongoing maintenance and support.",
+                             "rfp_id":  1,
+                             "rfp_title":  "Rfp For Erp Software And Implementation Services Posted 02 01 2020 RFP",
+                             "customer_name":  "City of Snoqualmie",
+                             "status":  "Verified Compliant"
+                         },
+                         {
+                             "id":  12,
+                             "category":  "Operational",
+                             "priority":  "Medium",
+                             "requirement":  "Project approach and understanding of the Cityâs objectives and requirements.",
+                             "rfp_id":  1,
+                             "rfp_title":  "Rfp For Erp Software And Implementation Services Posted 02 01 2020 RFP",
+                             "customer_name":  "City of Snoqualmie",
+                             "status":  "Verified Compliant"
+                         },
+                         {
+                             "id":  13,
+                             "category":  "Operational",
+                             "priority":  "Medium",
+                             "requirement":  "Supplierâs implementation methodology and success.",
+                             "rfp_id":  1,
+                             "rfp_title":  "Rfp For Erp Software And Implementation Services Posted 02 01 2020 RFP",
+                             "customer_name":  "City of Snoqualmie",
+                             "status":  "Verified Compliant"
+                         },
+                         {
+                             "id":  14,
+                             "category":  "Operational",
+                             "priority":  "Medium",
+                             "requirement":  "Feedback from customer references.",
+                             "rfp_id":  1,
+                             "rfp_title":  "Rfp For Erp Software And Implementation Services Posted 02 01 2020 RFP",
+                             "customer_name":  "City of Snoqualmie",
+                             "status":  "Verified Compliant"
+                         },
+                         {
+                             "id":  15,
+                             "category":  "Operational",
+                             "priority":  "Medium",
+                             "requirement":  "Compliance with the Cityâs terms and conditions.",
+                             "rfp_id":  1,
+                             "rfp_title":  "Rfp For Erp Software And Implementation Services Posted 02 01 2020 RFP",
+                             "customer_name":  "City of Snoqualmie",
+                             "status":  "Verified Compliant"
+                         },
+                         {
+                             "id":  16,
+                             "category":  "Operational",
+                             "priority":  "Medium",
+                             "requirement":  "Ability to meet the Cityâs requirements (software functionality, usability, performance, flexibility, integration, and technology).",
+                             "rfp_id":  1,
+                             "rfp_title":  "Rfp For Erp Software And Implementation Services Posted 02 01 2020 RFP",
+                             "customer_name":  "City of Snoqualmie",
+                             "status":  "Verified Compliant"
+                         },
+                         {
+                             "id":  17,
+                             "category":  "Operational",
+                             "priority":  "Medium",
+                             "requirement":  "Supplierâs installed base and experience with municipalities similar to the City of Snoqualmie.",
+                             "rfp_id":  1,
+                             "rfp_title":  "Rfp For Erp Software And Implementation Services Posted 02 01 2020 RFP",
+                             "customer_name":  "City of Snoqualmie",
+                             "status":  "Verified Compliant"
+                         },
+                         {
+                             "id":  18,
+                             "category":  "Financial",
+                             "priority":  "High",
+                             "requirement":  "The Cityâs budget is expected to cover the entire cost of the project including, but not limited to, software, hardware, data transfer, interfaces, configuration, installation, training, and the first yearâs warranty and support.",
+                             "rfp_id":  1,
+                             "rfp_title":  "Rfp For Erp Software And Implementation Services Posted 02 01 2020 RFP",
+                             "customer_name":  "City of Snoqualmie",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  19,
+                             "category":  "Mandatory",
+                             "priority":  "High",
+                             "requirement":  "The Case Management Software Solution must seamlessly integrate with LACERAâs Pension Administration System.",
+                             "rfp_id":  2,
+                             "rfp_title":  "Case Management Rfp",
+                             "customer_name":  "Los Angeles County Employees Retirement Association (LACERA)",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  20,
+                             "category":  "Technical",
+                             "priority":  "High",
+                             "requirement":  "The Case Management Software Solution must be a low code solution.",
+                             "rfp_id":  2,
+                             "rfp_title":  "Case Management Rfp",
+                             "customer_name":  "Los Angeles County Employees Retirement Association (LACERA)",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  21,
+                             "category":  "Operational",
+                             "priority":  "High",
+                             "requirement":  "The Case Management Software Solution must support 220 users across seven LACERA divisions.",
+                             "rfp_id":  2,
+                             "rfp_title":  "Case Management Rfp",
+                             "customer_name":  "Los Angeles County Employees Retirement Association (LACERA)",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  22,
+                             "category":  "Operational",
+                             "priority":  "High",
+                             "requirement":  "The Case Management Software Solution must facilitate collaboration between LACERA divisions that provide service to members.",
+                             "rfp_id":  2,
+                             "rfp_title":  "Case Management Rfp",
+                             "customer_name":  "Los Angeles County Employees Retirement Association (LACERA)",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  23,
+                             "category":  "Operational",
+                             "priority":  "High",
+                             "requirement":  "The Case Management Software Solution must increase operational efficiency of business processes.",
+                             "rfp_id":  2,
+                             "rfp_title":  "Case Management Rfp",
+                             "customer_name":  "Los Angeles County Employees Retirement Association (LACERA)",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  24,
+                             "category":  "Operational",
+                             "priority":  "High",
+                             "requirement":  "The Case Management Software Solution must improve visibility into business processes to increase productivity.",
+                             "rfp_id":  2,
+                             "rfp_title":  "Case Management Rfp",
+                             "customer_name":  "Los Angeles County Employees Retirement Association (LACERA)",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  25,
+                             "category":  "Operational",
+                             "priority":  "High",
+                             "requirement":  "The Case Management Software Solution must improve accuracy by reducing manual processing.",
+                             "rfp_id":  2,
+                             "rfp_title":  "Case Management Rfp",
+                             "customer_name":  "Los Angeles County Employees Retirement Association (LACERA)",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  26,
+                             "category":  "Operational",
+                             "priority":  "High",
+                             "requirement":  "The Case Management Software Solution must automate twenty-three (23) processes, divided into five phases, with Phase 1 including the First Payment and Disability Retirement processes.",
+                             "rfp_id":  2,
+                             "rfp_title":  "Case Management Rfp",
+                             "customer_name":  "Los Angeles County Employees Retirement Association (LACERA)",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  27,
+                             "category":  "Security",
+                             "priority":  "High",
+                             "requirement":  "The Case Management Software Solution must comply with LACERAâs IT Security Controls as outlined in Exhibit E.",
+                             "rfp_id":  2,
+                             "rfp_title":  "Case Management Rfp",
+                             "customer_name":  "Los Angeles County Employees Retirement Association (LACERA)",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  28,
+                             "category":  "Financial",
+                             "priority":  "Medium",
+                             "requirement":  "The vendor must provide accurate quotes for the implementation of the Case Management Software Solution, with LACERA conducting a vendor conference to assist with quote accuracy.",
+                             "rfp_id":  2,
+                             "rfp_title":  "Case Management Rfp",
+                             "customer_name":  "Los Angeles County Employees Retirement Association (LACERA)",
+                             "status":  "Verified Compliant"
+                         },
+                         {
+                             "id":  29,
+                             "category":  "Mandatory",
+                             "priority":  "High",
+                             "requirement":  "The system must be a cloud-based/software as a service (SaaS) solution.",
+                             "rfp_id":  3,
+                             "rfp_title":  "Rfp Permitting Software RFP",
+                             "customer_name":  "Town of Greece, NY",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  30,
+                             "category":  "Technical",
+                             "priority":  "High",
+                             "requirement":  "The system must be intuitive and easy to use for both customers and staff members.",
+                             "rfp_id":  3,
+                             "rfp_title":  "Rfp Permitting Software RFP",
+                             "customer_name":  "Town of Greece, NY",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  31,
+                             "category":  "Technical",
+                             "priority":  "High",
+                             "requirement":  "The system must support multi-department workflow software for the townâs 3 departments to share information and track projects.",
+                             "rfp_id":  3,
+                             "rfp_title":  "Rfp Permitting Software RFP",
+                             "customer_name":  "Town of Greece, NY",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  32,
+                             "category":  "Technical",
+                             "priority":  "High",
+                             "requirement":  "The system must accommodate other municipal operations or readily integrate with other systems and workflows (i.e., call center, online services, records management, GIS).",
+                             "rfp_id":  3,
+                             "rfp_title":  "Rfp Permitting Software RFP",
+                             "customer_name":  "Town of Greece, NY",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  33,
+                             "category":  "Technical",
+                             "priority":  "High",
+                             "requirement":  "The system must include robust search functions.",
+                             "rfp_id":  3,
+                             "rfp_title":  "Rfp Permitting Software RFP",
+                             "customer_name":  "Town of Greece, NY",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  34,
+                             "category":  "Technical",
+                             "priority":  "High",
+                             "requirement":  "The system must support the ability to attach multiple media formats and hyperlinks.",
+                             "rfp_id":  3,
+                             "rfp_title":  "Rfp Permitting Software RFP",
+                             "customer_name":  "Town of Greece, NY",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  35,
+                             "category":  "Technical",
+                             "priority":  "High",
+                             "requirement":  "The system must have reporting and analysis capabilities.",
+                             "rfp_id":  3,
+                             "rfp_title":  "Rfp Permitting Software RFP",
+                             "customer_name":  "Town of Greece, NY",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  36,
+                             "category":  "Technical",
+                             "priority":  "High",
+                             "requirement":  "The system must have mobile device display capabilities for practical remote user interface.",
+                             "rfp_id":  3,
+                             "rfp_title":  "Rfp Permitting Software RFP",
+                             "customer_name":  "Town of Greece, NY",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  37,
+                             "category":  "Technical",
+                             "priority":  "High",
+                             "requirement":  "The system must have true API functionality with ALL companion TOWN integrations/interfaces.",
+                             "rfp_id":  3,
+                             "rfp_title":  "Rfp Permitting Software RFP",
+                             "customer_name":  "Town of Greece, NY",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  38,
+                             "category":  "Technical",
+                             "priority":  "High",
+                             "requirement":  "The system must integrate with ESRI ArcGIS (existing Enterprise 11.3) and plan to move to 11.5 in 2026.",
+                             "rfp_id":  3,
+                             "rfp_title":  "Rfp Permitting Software RFP",
+                             "customer_name":  "Town of Greece, NY",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  39,
+                             "category":  "Technical",
+                             "priority":  "High",
+                             "requirement":  "The system must integrate with Tyler Technologies.",
+                             "rfp_id":  3,
+                             "rfp_title":  "Rfp Permitting Software RFP",
+                             "customer_name":  "Town of Greece, NY",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  40,
+                             "category":  "Technical",
+                             "priority":  "High",
+                             "requirement":  "The system must integrate with Digital Document Management (Laserfiche).",
+                             "rfp_id":  3,
+                             "rfp_title":  "Rfp Permitting Software RFP",
+                             "customer_name":  "Town of Greece, NY",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  41,
+                             "category":  "Technical",
+                             "priority":  "High",
+                             "requirement":  "The system must integrate with official online code publications (NYS Building and Fire Codes and local codes such as Zoning, Property Maintenance, etc.).",
+                             "rfp_id":  3,
+                             "rfp_title":  "Rfp Permitting Software RFP",
+                             "customer_name":  "Town of Greece, NY",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  42,
+                             "category":  "Technical",
+                             "priority":  "High",
+                             "requirement":  "The system must integrate with Business Licensing.",
+                             "rfp_id":  3,
+                             "rfp_title":  "Rfp Permitting Software RFP",
+                             "customer_name":  "Town of Greece, NY",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  43,
+                             "category":  "Technical",
+                             "priority":  "High",
+                             "requirement":  "The system must integrate with J.P. Morgan Chase Payment / Online Payment Systems.",
+                             "rfp_id":  3,
+                             "rfp_title":  "Rfp Permitting Software RFP",
+                             "customer_name":  "Town of Greece, NY",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  44,
+                             "category":  "Operational",
+                             "priority":  "High",
+                             "requirement":  "The proposal must include all services and costs to purchase and implement the system, including delivery, installation, integration, customization, data conversion and migration, training, documentation, project management, and licensing maintenance.",
+                             "rfp_id":  3,
+                             "rfp_title":  "Rfp Permitting Software RFP",
+                             "customer_name":  "Town of Greece, NY",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  45,
+                             "category":  "Operational",
+                             "priority":  "High",
+                             "requirement":  "Four (4) hard copies of the proposals and a digital .pdf version must be delivered via e-mail before the deadline.",
+                             "rfp_id":  3,
+                             "rfp_title":  "Rfp Permitting Software RFP",
+                             "customer_name":  "Town of Greece, NY",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  46,
+                             "category":  "Operational",
+                             "priority":  "High",
+                             "requirement":  "All communication regarding the RFP must be submitted in writing to the RFP Coordinator.",
+                             "rfp_id":  3,
+                             "rfp_title":  "Rfp Permitting Software RFP",
+                             "customer_name":  "Town of Greece, NY",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  47,
+                             "category":  "Operational",
+                             "priority":  "High",
+                             "requirement":  "Prospective Responders must check the TOWNâs website for the issuance of addenda prior to submitting a Proposal.",
+                             "rfp_id":  3,
+                             "rfp_title":  "Rfp Permitting Software RFP",
+                             "customer_name":  "Town of Greece, NY",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  48,
+                             "category":  "Financial",
+                             "priority":  "High",
+                             "requirement":  "The proposal must include all costs associated with the system, including but not limited to delivery, installation, integration, customization, data conversion and migration, training, documentation, project management, and licensing maintenance.",
+                             "rfp_id":  3,
+                             "rfp_title":  "Rfp Permitting Software RFP",
+                             "customer_name":  "Town of Greece, NY",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  49,
+                             "category":  "Mandatory",
+                             "priority":  "High",
+                             "requirement":  "All suppliers must respond in detail to each element of this RFP in order to be considered for contract award.",
+                             "rfp_id":  4,
+                             "rfp_title":  "2021 Rfp   Pm Software RFP",
+                             "customer_name":  "City of Billings",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  50,
+                             "category":  "Mandatory",
+                             "priority":  "High",
+                             "requirement":  "All proposals must be mailed or emailed to the contact person at the address below.",
+                             "rfp_id":  4,
+                             "rfp_title":  "2021 Rfp   Pm Software RFP",
+                             "customer_name":  "City of Billings",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  51,
+                             "category":  "Mandatory",
+                             "priority":  "High",
+                             "requirement":  "No hand-delivered proposals will be accepted in order to prohibit the transmission of COVID-19.",
+                             "rfp_id":  4,
+                             "rfp_title":  "2021 Rfp   Pm Software RFP",
+                             "customer_name":  "City of Billings",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  52,
+                             "category":  "Mandatory",
+                             "priority":  "High",
+                             "requirement":  "If pricing has been requested, it must be in a separate sealed envelope or emailed under separate cover and âConstruction Project Management Software for Facilities Division RFP Confidential Pricingâ as the subject line.",
+                             "rfp_id":  4,
+                             "rfp_title":  "2021 Rfp   Pm Software RFP",
+                             "customer_name":  "City of Billings",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  53,
+                             "category":  "Mandatory",
+                             "priority":  "High",
+                             "requirement":  "If the proposal is mailed, pricing may be included in a sealed envelope; however, if the proposal is emailed, pricing must be mailed in a sealed envelope or emailed under separate cover and âConstruction Project Management Software for Facilities Division RFP Confidential Pricingâ as the subject line.",
+                             "rfp_id":  4,
+                             "rfp_title":  "2021 Rfp   Pm Software RFP",
+                             "customer_name":  "City of Billings",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  54,
+                             "category":  "Mandatory",
+                             "priority":  "High",
+                             "requirement":  "If the proposal is mailed, please also include or email an electronic version, minus pricing.",
+                             "rfp_id":  4,
+                             "rfp_title":  "2021 Rfp   Pm Software RFP",
+                             "customer_name":  "City of Billings",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  55,
+                             "category":  "Mandatory",
+                             "priority":  "High",
+                             "requirement":  "Attachment F, the Intent to Respond form, must be completed and emailed or faxed at least two (2) days prior to the advertised RFP due date.",
+                             "rfp_id":  4,
+                             "rfp_title":  "2021 Rfp   Pm Software RFP",
+                             "customer_name":  "City of Billings",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  56,
+                             "category":  "Operational",
+                             "priority":  "Medium",
+                             "requirement":  "Proposers must carefully examine the Standards and Specifications as well as all other attached documents.",
+                             "rfp_id":  4,
+                             "rfp_title":  "2021 Rfp   Pm Software RFP",
+                             "customer_name":  "City of Billings",
+                             "status":  "Verified Compliant"
+                         },
+                         {
+                             "id":  57,
+                             "category":  "Operational",
+                             "priority":  "Medium",
+                             "requirement":  "Proposers must fully inform themselves of the existing conditions and limitations.",
+                             "rfp_id":  4,
+                             "rfp_title":  "2021 Rfp   Pm Software RFP",
+                             "customer_name":  "City of Billings",
+                             "status":  "Verified Compliant"
+                         },
+                         {
+                             "id":  58,
+                             "category":  "Operational",
+                             "priority":  "Medium",
+                             "requirement":  "Proposers must include with the proposal sufficient information to cover all items required in the specifications.",
+                             "rfp_id":  4,
+                             "rfp_title":  "2021 Rfp   Pm Software RFP",
+                             "customer_name":  "City of Billings",
+                             "status":  "Verified Compliant"
+                         },
+                         {
+                             "id":  59,
+                             "category":  "Operational",
+                             "priority":  "Medium",
+                             "requirement":  "Proposals submitted without required forms may be rejected.",
+                             "rfp_id":  4,
+                             "rfp_title":  "2021 Rfp   Pm Software RFP",
+                             "customer_name":  "City of Billings",
+                             "status":  "Verified Compliant"
+                         },
+                         {
+                             "id":  60,
+                             "category":  "Mandatory",
+                             "priority":  "High",
+                             "requirement":  "The Consultant must be selected in accordance with the CQCCBS method of selection.",
+                             "rfp_id":  5,
+                             "rfp_title":  "Attachment 7335580 Rfp Final For Ignfa RFP",
+                             "customer_name":  "Indira Gandhi National Forest Academy",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  61,
+                             "category":  "Mandatory",
+                             "priority":  "High",
+                             "requirement":  "The Technical Proposal and Financial Proposal must be submitted by the deadline of 30.09.2025.",
+                             "rfp_id":  5,
+                             "rfp_title":  "Attachment 7335580 Rfp Final For Ignfa RFP",
+                             "customer_name":  "Indira Gandhi National Forest Academy",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  62,
+                             "category":  "Mandatory",
+                             "priority":  "High",
+                             "requirement":  "The Technical Proposal must be placed inside a sealed envelope clearly marked \u0027TECHNICAL PROPOSAL\u0027 and with a warning \u0027DO NOT OPEN UNTIL 30/09/2025\u0027.",
+                             "rfp_id":  5,
+                             "rfp_title":  "Attachment 7335580 Rfp Final For Ignfa RFP",
+                             "customer_name":  "Indira Gandhi National Forest Academy",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  63,
+                             "category":  "Mandatory",
+                             "priority":  "High",
+                             "requirement":  "The Financial Proposal must be prepared using the Standard Forms provided in Section 5 of the RFP.",
+                             "rfp_id":  5,
+                             "rfp_title":  "Attachment 7335580 Rfp Final For Ignfa RFP",
+                             "customer_name":  "Indira Gandhi National Forest Academy",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  64,
+                             "category":  "Technical",
+                             "priority":  "High",
+                             "requirement":  "The Technical Proposal must be prepared using the Standard Forms provided in Section 4 of the RFP and must not include any financial information.",
+                             "rfp_id":  5,
+                             "rfp_title":  "Attachment 7335580 Rfp Final For Ignfa RFP",
+                             "customer_name":  "Indira Gandhi National Forest Academy",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  65,
+                             "category":  "Operational",
+                             "priority":  "Medium",
+                             "requirement":  "The Technical Proposal shall be evaluated on the basis of the criteria specified in the RFP.",
+                             "rfp_id":  5,
+                             "rfp_title":  "Attachment 7335580 Rfp Final For Ignfa RFP",
+                             "customer_name":  "Indira Gandhi National Forest Academy",
+                             "status":  "Verified Compliant"
+                         },
+                         {
+                             "id":  66,
+                             "category":  "Operational",
+                             "priority":  "Medium",
+                             "requirement":  "The Financial Proposal shall remain sealed and securely stored with IGNFA until they are opened in accordance with subsequent provisions of the RFP.",
+                             "rfp_id":  5,
+                             "rfp_title":  "Attachment 7335580 Rfp Final For Ignfa RFP",
+                             "customer_name":  "Indira Gandhi National Forest Academy",
+                             "status":  "Verified Compliant"
+                         },
+                         {
+                             "id":  67,
+                             "category":  "Operational",
+                             "priority":  "Medium",
+                             "requirement":  "The evaluation committee shall conduct the opening of the Technical Proposals in the presence of the shortlisted Consultants\u0027 authorized representatives who choose to attend (in person, or online).",
+                             "rfp_id":  5,
+                             "rfp_title":  "Attachment 7335580 Rfp Final For Ignfa RFP",
+                             "customer_name":  "Indira Gandhi National Forest Academy",
+                             "status":  "Verified Compliant"
+                         },
+                         {
+                             "id":  68,
+                             "category":  "Operational",
+                             "priority":  "Medium",
+                             "requirement":  "The envelopes with the Financial Proposal shall remain sealed and shall be securely stored with IGNFA until they are opened in accordance with subsequent provisions of the RFP.",
+                             "rfp_id":  5,
+                             "rfp_title":  "Attachment 7335580 Rfp Final For Ignfa RFP",
+                             "customer_name":  "Indira Gandhi National Forest Academy",
+                             "status":  "Verified Compliant"
+                         },
+                         {
+                             "id":  69,
+                             "category":  "Operational",
+                             "priority":  "Medium",
+                             "requirement":  "The Technical Proposal must be submitted to the following address: AP Admin, Indira Gandhi National Forest Academy, PO: New Forest, Dist: Dehradun, Uttarakhand -248006.",
+                             "rfp_id":  5,
+                             "rfp_title":  "Attachment 7335580 Rfp Final For Ignfa RFP",
+                             "customer_name":  "Indira Gandhi National Forest Academy",
+                             "status":  "Verified Compliant"
+                         },
+                         {
+                             "id":  70,
+                             "category":  "Operational",
+                             "priority":  "Medium",
+                             "requirement":  "The Technical Proposal must be submitted by the deadline indicated in the timeline details, or any extension to this deadline.",
+                             "rfp_id":  5,
+                             "rfp_title":  "Attachment 7335580 Rfp Final For Ignfa RFP",
+                             "customer_name":  "Indira Gandhi National Forest Academy",
+                             "status":  "Verified Compliant"
+                         },
+                         {
+                             "id":  71,
+                             "category":  "Mandatory",
+                             "priority":  "High",
+                             "requirement":  "Solid customer base utilizing the proposed solution within Washington State, including cities similar in size and service delivery to Snoqualmie.",
+                             "rfp_id":  6,
+                             "rfp_title":  "Rfp For Erp Software And Implementation Services Posted 02 01 2020 RFP",
+                             "customer_name":  "City of Snoqualmie",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  72,
+                             "category":  "Mandatory",
+                             "priority":  "High",
+                             "requirement":  "Successful experience implementing the proposed software in Washington to fully comply with BARS tracking and reporting requirements.",
+                             "rfp_id":  6,
+                             "rfp_title":  "Rfp For Erp Software And Implementation Services Posted 02 01 2020 RFP",
+                             "customer_name":  "City of Snoqualmie",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  73,
+                             "category":  "Mandatory",
+                             "priority":  "High",
+                             "requirement":  "Meet all functional and technical requirements stated within this RFP using commercial off-the-shelf software.",
+                             "rfp_id":  6,
+                             "rfp_title":  "Rfp For Erp Software And Implementation Services Posted 02 01 2020 RFP",
+                             "customer_name":  "City of Snoqualmie",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  74,
+                             "category":  "Technical",
+                             "priority":  "High",
+                             "requirement":  "The successful supplier shall be responsible for the final City approved design, installation, and implementation of the ERP system including development of user acceptance testing, system integration and connectivity to existing resources.",
+                             "rfp_id":  6,
+                             "rfp_title":  "Rfp For Erp Software And Implementation Services Posted 02 01 2020 RFP",
+                             "customer_name":  "City of Snoqualmie",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  75,
+                             "category":  "Technical",
+                             "priority":  "High",
+                             "requirement":  "Leverage Microsoft-centric architecture supporting Microsoft SQL Server database and the Cityâs technology direction (if on-premise solution is proposed).",
+                             "rfp_id":  6,
+                             "rfp_title":  "Rfp For Erp Software And Implementation Services Posted 02 01 2020 RFP",
+                             "customer_name":  "City of Snoqualmie",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  76,
+                             "category":  "Technical",
+                             "priority":  "High",
+                             "requirement":  "Integration with a budgeting analytics and planning tool to be selected as part of the RFP process.",
+                             "rfp_id":  6,
+                             "rfp_title":  "Rfp For Erp Software And Implementation Services Posted 02 01 2020 RFP",
+                             "customer_name":  "City of Snoqualmie",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  77,
+                             "category":  "Technical",
+                             "priority":  "High",
+                             "requirement":  "A highly intuitive system with minimal training from a user perspective in order to improve cross-departmental performance and efficiency.",
+                             "rfp_id":  6,
+                             "rfp_title":  "Rfp For Erp Software And Implementation Services Posted 02 01 2020 RFP",
+                             "customer_name":  "City of Snoqualmie",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  78,
+                             "category":  "Technical",
+                             "priority":  "High",
+                             "requirement":  "Easy access to data for report and query generation without the need for a SQL specialist.",
+                             "rfp_id":  6,
+                             "rfp_title":  "Rfp For Erp Software And Implementation Services Posted 02 01 2020 RFP",
+                             "customer_name":  "City of Snoqualmie",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  79,
+                             "category":  "Technical",
+                             "priority":  "High",
+                             "requirement":  "User-friendly mobile technology for Timekeeping and Payroll employee self-service.",
+                             "rfp_id":  6,
+                             "rfp_title":  "Rfp For Erp Software And Implementation Services Posted 02 01 2020 RFP",
+                             "customer_name":  "City of Snoqualmie",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  80,
+                             "category":  "Technical",
+                             "priority":  "High",
+                             "requirement":  "Integration with ESRI ArcGIS, MaintStar, TRAKit, and external payment processors.",
+                             "rfp_id":  6,
+                             "rfp_title":  "Rfp For Erp Software And Implementation Services Posted 02 01 2020 RFP",
+                             "customer_name":  "City of Snoqualmie",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  81,
+                             "category":  "Operational",
+                             "priority":  "High",
+                             "requirement":  "Cost and support quality for ongoing maintenance and support.",
+                             "rfp_id":  6,
+                             "rfp_title":  "Rfp For Erp Software And Implementation Services Posted 02 01 2020 RFP",
+                             "customer_name":  "City of Snoqualmie",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  82,
+                             "category":  "Operational",
+                             "priority":  "High",
+                             "requirement":  "Project approach and understanding of the Cityâs objectives and requirements.",
+                             "rfp_id":  6,
+                             "rfp_title":  "Rfp For Erp Software And Implementation Services Posted 02 01 2020 RFP",
+                             "customer_name":  "City of Snoqualmie",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  83,
+                             "category":  "Operational",
+                             "priority":  "High",
+                             "requirement":  "Supplierâs implementation methodology and success.",
+                             "rfp_id":  6,
+                             "rfp_title":  "Rfp For Erp Software And Implementation Services Posted 02 01 2020 RFP",
+                             "customer_name":  "City of Snoqualmie",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  84,
+                             "category":  "Operational",
+                             "priority":  "High",
+                             "requirement":  "Feedback from customer references.",
+                             "rfp_id":  6,
+                             "rfp_title":  "Rfp For Erp Software And Implementation Services Posted 02 01 2020 RFP",
+                             "customer_name":  "City of Snoqualmie",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  85,
+                             "category":  "Operational",
+                             "priority":  "High",
+                             "requirement":  "Compliance with the Cityâs terms and conditions.",
+                             "rfp_id":  6,
+                             "rfp_title":  "Rfp For Erp Software And Implementation Services Posted 02 01 2020 RFP",
+                             "customer_name":  "City of Snoqualmie",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  86,
+                             "category":  "Operational",
+                             "priority":  "High",
+                             "requirement":  "Ability to meet the Cityâs requirements (software functionality, usability, performance, flexibility, integration, and technology).",
+                             "rfp_id":  6,
+                             "rfp_title":  "Rfp For Erp Software And Implementation Services Posted 02 01 2020 RFP",
+                             "customer_name":  "City of Snoqualmie",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  87,
+                             "category":  "Operational",
+                             "priority":  "High",
+                             "requirement":  "Supplierâs installed base and experience with municipalities similar to the City of Snoqualmie.",
+                             "rfp_id":  6,
+                             "rfp_title":  "Rfp For Erp Software And Implementation Services Posted 02 01 2020 RFP",
+                             "customer_name":  "City of Snoqualmie",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  88,
+                             "category":  "Financial",
+                             "priority":  "High",
+                             "requirement":  "The Cityâs budget is expected to cover the entire cost of the project including, but not limited to, software, hardware, data transfer, interfaces, configuration, installation, training, and the first yearâs warranty and support.",
+                             "rfp_id":  6,
+                             "rfp_title":  "Rfp For Erp Software And Implementation Services Posted 02 01 2020 RFP",
+                             "customer_name":  "City of Snoqualmie",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  89,
+                             "category":  "Technical",
+                             "priority":  "High",
+                             "requirement":  "Conduct a comprehensive work study to evaluate current roles, responsibilities, and organizational design.",
+                             "rfp_id":  7,
+                             "rfp_title":  "Attachment 7335580 Rfp Final For Ignfa RFP",
+                             "customer_name":  "Indira Gandhi National Forest Academy (IGNFA)",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  90,
+                             "category":  "Technical",
+                             "priority":  "High",
+                             "requirement":  "Prepare a Technical Proposal using the Standard Forms provided in Section 4 of the RFP.",
+                             "rfp_id":  7,
+                             "rfp_title":  "Attachment 7335580 Rfp Final For Ignfa RFP",
+                             "customer_name":  "Indira Gandhi National Forest Academy (IGNFA)",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  91,
+                             "category":  "Financial",
+                             "priority":  "High",
+                             "requirement":  "Prepare a Financial Proposal using the Standard Forms provided in Section 5 of the RFP.",
+                             "rfp_id":  7,
+                             "rfp_title":  "Attachment 7335580 Rfp Final For Ignfa RFP",
+                             "customer_name":  "Indira Gandhi National Forest Academy (IGNFA)",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  92,
+                             "category":  "Mandatory",
+                             "priority":  "High",
+                             "requirement":  "Submit the Technical Proposal in a sealed envelope clearly marked and with a warning not to open until 30/09/2025.",
+                             "rfp_id":  7,
+                             "rfp_title":  "Attachment 7335580 Rfp Final For Ignfa RFP",
+                             "customer_name":  "Indira Gandhi National Forest Academy (IGNFA)",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  93,
+                             "category":  "Mandatory",
+                             "priority":  "High",
+                             "requirement":  "Submit the proposal by the deadline of 30.09.2025.",
+                             "rfp_id":  7,
+                             "rfp_title":  "Attachment 7335580 Rfp Final For Ignfa RFP",
+                             "customer_name":  "Indira Gandhi National Forest Academy (IGNFA)",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  94,
+                             "category":  "Technical",
+                             "priority":  "High",
+                             "requirement":  "The software must seamlessly integrate with LACERAâs Pension Administration System.",
+                             "rfp_id":  8,
+                             "rfp_title":  "Case Management Rfp",
+                             "customer_name":  "Los Angeles County Employees Retirement Association (LACERA)",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  95,
+                             "category":  "Technical",
+                             "priority":  "High",
+                             "requirement":  "The solution must support 220 users across seven LACERA divisions.",
+                             "rfp_id":  8,
+                             "rfp_title":  "Case Management Rfp",
+                             "customer_name":  "Los Angeles County Employees Retirement Association (LACERA)",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  96,
+                             "category":  "Technical",
+                             "priority":  "High",
+                             "requirement":  "The software must automate 23 identified business processes, divided into five phases, with Phase 1 covering First Payment and Disability Retirement processes.",
+                             "rfp_id":  8,
+                             "rfp_title":  "Case Management Rfp",
+                             "customer_name":  "Los Angeles County Employees Retirement Association (LACERA)",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  97,
+                             "category":  "Financial",
+                             "priority":  "Medium",
+                             "requirement":  "Vendors must provide accurate quotes, with assistance from LACERA through a vendor conference and flowcharts.",
+                             "rfp_id":  8,
+                             "rfp_title":  "Case Management Rfp",
+                             "customer_name":  "Los Angeles County Employees Retirement Association (LACERA)",
+                             "status":  "Verified Compliant"
+                         },
+                         {
+                             "id":  98,
+                             "category":  "Legal",
+                             "priority":  "High",
+                             "requirement":  "Vendors must comply with the Public Records Act and Ralph M. Brown Act.",
+                             "rfp_id":  8,
+                             "rfp_title":  "Case Management Rfp",
+                             "customer_name":  "Los Angeles County Employees Retirement Association (LACERA)",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  99,
+                             "category":  "Legal",
+                             "priority":  "High",
+                             "requirement":  "Vendors must adhere to LACERAâs data protection policies.",
+                             "rfp_id":  8,
+                             "rfp_title":  "Case Management Rfp",
+                             "customer_name":  "Los Angeles County Employees Retirement Association (LACERA)",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  100,
+                             "category":  "Mandatory",
+                             "priority":  "High",
+                             "requirement":  "Vendors must meet minimum qualifications as specified in the RFP.",
+                             "rfp_id":  8,
+                             "rfp_title":  "Case Management Rfp",
+                             "customer_name":  "Los Angeles County Employees Retirement Association (LACERA)",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  101,
+                             "category":  "Technical",
+                             "priority":  "High",
+                             "requirement":  "Provide cloud services that meet AICTE\u0027s technical requirements as outlined in the RFP.",
+                             "rfp_id":  9,
+                             "rfp_title":  "Aicte Rfp For Cloud Services Final Version RFP",
+                             "customer_name":  "All India Council for Technical Education (AICTE)",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  102,
+                             "category":  "Financial",
+                             "priority":  "High",
+                             "requirement":  "Submit a bid with a total project cost not exceeding INR 12.00 Crore.",
+                             "rfp_id":  9,
+                             "rfp_title":  "Aicte Rfp For Cloud Services Final Version RFP",
+                             "customer_name":  "All India Council for Technical Education (AICTE)",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  103,
+                             "category":  "Legal",
+                             "priority":  "High",
+                             "requirement":  "Submit a bid validity of 180 days from the last date of opening of the tender.",
+                             "rfp_id":  9,
+                             "rfp_title":  "Aicte Rfp For Cloud Services Final Version RFP",
+                             "customer_name":  "All India Council for Technical Education (AICTE)",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  104,
+                             "category":  "Mandatory",
+                             "priority":  "High",
+                             "requirement":  "Provide a bid security deposit of INR 36.00 Lac in the form of a DD in favor of AICTE payable at New Delhi.",
+                             "rfp_id":  9,
+                             "rfp_title":  "Aicte Rfp For Cloud Services Final Version RFP",
+                             "customer_name":  "All India Council for Technical Education (AICTE)",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  105,
+                             "category":  "Technical",
+                             "priority":  "Medium",
+                             "requirement":  "Ensure compliance with all technical and service level agreements (SLAs) specified in the RFP.",
+                             "rfp_id":  9,
+                             "rfp_title":  "Aicte Rfp For Cloud Services Final Version RFP",
+                             "customer_name":  "All India Council for Technical Education (AICTE)",
+                             "status":  "Verified Compliant"
+                         },
+                         {
+                             "id":  106,
+                             "category":  "Financial",
+                             "priority":  "Medium",
+                             "requirement":  "Adhere to the payment terms and conditions as specified in the RFP.",
+                             "rfp_id":  9,
+                             "rfp_title":  "Aicte Rfp For Cloud Services Final Version RFP",
+                             "customer_name":  "All India Council for Technical Education (AICTE)",
+                             "status":  "Verified Compliant"
+                         },
+                         {
+                             "id":  107,
+                             "category":  "Legal",
+                             "priority":  "Medium",
+                             "requirement":  "Comply with all legal and regulatory requirements, including the submission of necessary documents and adherence to the terms and conditions of the RFP.",
+                             "rfp_id":  9,
+                             "rfp_title":  "Aicte Rfp For Cloud Services Final Version RFP",
+                             "customer_name":  "All India Council for Technical Education (AICTE)",
+                             "status":  "Verified Compliant"
+                         },
+                         {
+                             "id":  108,
+                             "category":  "Technical",
+                             "priority":  "High",
+                             "requirement":  "Provide Managed IT Services for the PART Administrative Office and support facilities.",
+                             "rfp_id":  10,
+                             "rfp_title":  "Rfp Mit Services 1 RFP",
+                             "customer_name":  "Piedmont Authority for Regional Transportation (PART)",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  109,
+                             "category":  "Technical",
+                             "priority":  "High",
+                             "requirement":  "Support 30 nodes (laptops and desktops), two NAS devices, phone system, printers, and various servers and software.",
+                             "rfp_id":  10,
+                             "rfp_title":  "Rfp Mit Services 1 RFP",
+                             "customer_name":  "Piedmont Authority for Regional Transportation (PART)",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  110,
+                             "category":  "Financial",
+                             "priority":  "High",
+                             "requirement":  "Submit cost projections or fee proposals.",
+                             "rfp_id":  10,
+                             "rfp_title":  "Rfp Mit Services 1 RFP",
+                             "customer_name":  "Piedmont Authority for Regional Transportation (PART)",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  111,
+                             "category":  "Mandatory",
+                             "priority":  "High",
+                             "requirement":  "Submit one original and one digital copy of the complete response by December 2, 2019.",
+                             "rfp_id":  10,
+                             "rfp_title":  "Rfp Mit Services 1 RFP",
+                             "customer_name":  "Piedmont Authority for Regional Transportation (PART)",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  112,
+                             "category":  "Mandatory",
+                             "priority":  "High",
+                             "requirement":  "Include all required documentation, including federal/state contract clauses (Exhibit A).",
+                             "rfp_id":  10,
+                             "rfp_title":  "Rfp Mit Services 1 RFP",
+                             "customer_name":  "Piedmont Authority for Regional Transportation (PART)",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  113,
+                             "category":  "Legal",
+                             "priority":  "High",
+                             "requirement":  "Observe applicable rules and regulations from FTA, NCDOT, and PART.",
+                             "rfp_id":  10,
+                             "rfp_title":  "Rfp Mit Services 1 RFP",
+                             "customer_name":  "Piedmont Authority for Regional Transportation (PART)",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  114,
+                             "category":  "Mandatory",
+                             "priority":  "High",
+                             "requirement":  "Proposals must remain valid for at least 90 days.",
+                             "rfp_id":  10,
+                             "rfp_title":  "Rfp Mit Services 1 RFP",
+                             "customer_name":  "Piedmont Authority for Regional Transportation (PART)",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  115,
+                             "category":  "Mandatory",
+                             "priority":  "High",
+                             "requirement":  "Submittals must be signed by an official authorized to bind the proposer.",
+                             "rfp_id":  10,
+                             "rfp_title":  "Rfp Mit Services 1 RFP",
+                             "customer_name":  "Piedmont Authority for Regional Transportation (PART)",
+                             "status":  "Review Required"
+                         },
+                         {
+                             "id":  116,
+                             "category":  "Mandatory",
+                             "priority":  "High",
+                             "requirement":  "Clearly mark the package referencing RFP NO. 11-MIT-19.",
+                             "rfp_id":  10,
+                             "rfp_title":  "Rfp Mit Services 1 RFP",
+                             "customer_name":  "Piedmont Authority for Regional Transportation (PART)",
+                             "status":  "Review Required"
+                         }
+                     ]
+}

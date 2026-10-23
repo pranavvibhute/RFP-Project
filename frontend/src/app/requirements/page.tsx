@@ -23,8 +23,8 @@ export default function RequirementsPage() {
 
   const fetchRequirements = async () => {
     try {
-      const res = await api.get<RequirementItem[]>("/api/v1/requirements");
-      setRequirements(res.data);
+      const res = await api.get<{ requirements: RequirementItem[] }>("/api/v1/requirements");
+      setRequirements(res.data.requirements);
     } catch (err) {
       console.error("Failed to fetch requirements:", err);
     } finally {

@@ -15,6 +15,7 @@ import {
   Tooltip,
 } from "recharts";
 import { api } from "@/lib/api";
+import { getCookie } from "@/lib/cookie";
 
 interface ComplianceData {
   rate: number;
@@ -43,23 +44,35 @@ export default function ComplianceSessionsSection() {
 
   const fetchMetrics = async () => {
     try {
+      console.log("[ComplianceSessions] 🔄 Fetching metrics from /api/v1/rfps/dashboard");
+      const token = localStorage.getItem("auth_token");
+      console.log("[ComplianceSessions] 🔑 Token in localStorage:", token ? "YES (" + token.substring(0, 20) + "...)" : "NO");
+      console.log("[ComplianceSessions] 🍪 Token in cookie:", getCookie("auth_token") ? "YES (" + getCookie("auth_token")!.substring(0, 20) + "...)" : "NO");
+      
       const res = await api.get<DashboardMetrics>("/api/v1/rfps/dashboard");
       setMetrics(res.data);
-    } catch (err) {
+      console.log("[ComplianceSessions] ✅ Metrics received:", res.data);
+    } catch (err: any) {
       console.error("Failed to load compliance metrics:", err);
+      if (err.response) {
+        console.error("[ComplianceSessions] 🔴 Status:", err.response.status);
+        console.error("[ComplianceSessions] 🔴 Data:", err.response.data);
+      }
       setError("Failed to load compliance data");
     }
   };
 
   const fetchCategoryCompliance = async () => {
     try {
+      console.log("[ComplianceSessions] 🔄 Fetching requirements from /api/v1/requirements");
       const res = await api.get<{ requirements: any[] }>("/api/v1/requirements");
       const requirements = res.data.requirements || [];
-      
+      console.log("[ComplianceSessions] ✅ Requirements received:", requirements.length, requirements);
+
       // Group by category and compute compliance
       const categoryMap = new Map<string, CategoryCompliance>();
-      
-      requirements.forEach(req => {
+
+      requirements.forEach((req) => {
         const cat = req.category || "Uncategorized";
         if (!categoryMap.has(cat)) {
           categoryMap.set(cat, { category: cat, total: 0, compliant: 0, pending: 0, non_compliant: 0 });
@@ -75,14 +88,21 @@ export default function ComplianceSessionsSection() {
           catData.pending += 1;
         }
       });
-      
-      setCategoryCompliance(Array.from(categoryMap.values()));
-    } catch (err) {
+
+      const result = Array.from(categoryMap.values());
+      console.log("[ComplianceSessions] ✅ Category compliance computed:", result);
+      setCategoryCompliance(result);
+    } catch (err: any) {
       console.error("Failed to load category compliance:", err);
+      if (err.response) {
+        console.error("[ComplianceSessions] 🔴 Status:", err.response.status);
+        console.error("[ComplianceSessions] 🔴 Data:", err.response.data);
+      }
     }
   };
 
   useEffect(() => {
+    console.log("[ComplianceSessions] 🔄 useEffect triggered, fetching data...");
     setLoading(true);
     setError(null);
     fetchMetrics();
@@ -90,6 +110,7 @@ export default function ComplianceSessionsSection() {
   }, []);
 
   const handleRefresh = () => {
+    console.log("[ComplianceSessions] 🔄 Refresh button clicked");
     setLoading(true);
     setError(null);
     fetchMetrics();
@@ -150,8 +171,8 @@ export default function ComplianceSessionsSection() {
     { name: "Remaining", value: 100 - comp.rate, color: "#e2e8f0" },
   ];
 
-  const categoryBarData = categoryCompliance.length > 0 
-    ? categoryCompliance.map(c => ({
+  const categoryBarData = categoryCompliance.length > 0
+    ? categoryCompliance.map((c) => ({
         name: c.category,
         "Total Extracted": c.total,
         "Compliant": c.compliant,
@@ -160,7 +181,11 @@ export default function ComplianceSessionsSection() {
       }))
     : [];
 
-  const hasCategoryData = categoryBarData.length > 0 && categoryBarData.some(d => d["Total Extracted"] > 0);
+  const hasCategoryData = categoryBarData.length > 0 && categoryBarData.some((d) => d["Total Extracted"] > 0);
+
+  console.log("[ComplianceSessions] Rendering with comp:", comp);
+  console.log("[ComplianceSessions] 📊 categoryCompliance count:", categoryCompliance.length);
+  console.log("[ComplianceSessions] 📊 hasCategoryData:", hasCategoryData);
 
   return (
     <div className="space-y-4">
@@ -188,7 +213,7 @@ export default function ComplianceSessionsSection() {
               comp.rate >= 60 ? "text-amber-600 bg-amber-50 border border-amber-100" :
               "text-rose-600 bg-rose-50 border border-rose-100"
             }`}>
-              {"Target > 80%"}
+              Target &gt; 80%
             </span>
           </div>
 
