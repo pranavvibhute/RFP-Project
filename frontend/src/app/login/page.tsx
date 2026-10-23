@@ -109,39 +109,6 @@ export default function LoginPage() {
           </button>
         </form>
 
-        {/* Quick-Fill Trial Credentials */}
-        <div className="p-3.5 bg-slate-50 rounded-2xl border border-slate-200/80 space-y-2 text-xs">
-          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block text-center">
-            Click to Auto-Fill Trial Credentials
-          </span>
-          <div className="grid grid-cols-2 gap-2">
-            <button
-              type="button"
-              onClick={() => {
-                setUsername("admin@company.com");
-                setPassword("admin123");
-              }}
-              className="p-2.5 bg-white hover:bg-slate-100 border border-slate-200 rounded-xl text-left transition shadow-2xs cursor-pointer"
-            >
-              <div className="font-bold text-slate-800 text-[11px]">Administrator</div>
-              <div className="text-[10px] text-slate-500 font-mono truncate">admin@company.com</div>
-              <div className="text-[9px] text-emerald-600 font-semibold mt-0.5">pass: admin123</div>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => {
-                setUsername("test@test.com");
-                setPassword("test123");
-              }}
-              className="p-2.5 bg-white hover:bg-slate-100 border border-slate-200 rounded-xl text-left transition shadow-2xs cursor-pointer"
-            >
-              <div className="font-bold text-slate-800 text-[11px]">Team Member</div>
-              <div className="text-[10px] text-slate-500 font-mono truncate">test@test.com</div>
-              <div className="text-[9px] text-emerald-600 font-semibold mt-0.5">pass: test123</div>
-            </button>
-          </div>
-        </div>
 
         <div className="text-center text-xs text-slate-500 font-medium pt-1">
           Don&apos;t have an account?{" "}
