@@ -63,6 +63,30 @@ export default function RFPDetailPage({ params }: { params: Promise<{ id: string
       .finally(() => setLoading(false));
   }, [rfpId]);
 
+  const [exportingType, setExportingType] = useState<string | null>(null);
+
+  const handleExport = async (type: "docx" | "pdf" | "excel", filename: string) => {
+    try {
+      setExportingType(type);
+      const res = await api.get(`/api/v1/reports/${type}/${rfpId}`, {
+        responseType: "blob",
+      });
+      const blob = new Blob([res.data]);
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", filename);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error(`Failed to export ${type}:`, err);
+    } finally {
+      setExportingType(null);
+    }
+  };
+
   const handleStatusChange = async (reqId: number, newStatus: string) => {
     try {
       await api.patch(`/api/v1/requirements/${reqId}/compliance`, {
@@ -115,33 +139,30 @@ export default function RFPDetailPage({ params }: { params: Promise<{ id: string
           </Link>
 
           <div className="flex items-center gap-3">
-            <a
-              href={`${API_BASE_URL}/api/v1/reports/docx/${rfp.id}`}
-              target="_blank"
-              rel="noreferrer"
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-2xs transition-colors"
+            <button
+              onClick={() => handleExport("docx", `BidWise_Report_RFP_${rfp.id}.docx`)}
+              disabled={exportingType !== null}
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white rounded-xl text-xs font-bold shadow-2xs transition-colors cursor-pointer"
             >
-              <Download className="w-3.5 h-3.5" />
+              {exportingType === "docx" ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Download className="w-3.5 h-3.5" />}
               <span>Export Word (.docx)</span>
-            </a>
-            <a
-              href={`${API_BASE_URL}/api/v1/reports/pdf/${rfp.id}`}
-              target="_blank"
-              rel="noreferrer"
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-50 shadow-2xs"
+            </button>
+            <button
+              onClick={() => handleExport("pdf", `Executive_Summary_RFP_${rfp.id}.txt`)}
+              disabled={exportingType !== null}
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-50 disabled:opacity-60 shadow-2xs cursor-pointer"
             >
-              <Download className="w-3.5 h-3.5" />
-              <span>Export PDF Report</span>
-            </a>
-            <a
-              href={`${API_BASE_URL}/api/v1/reports/excel/${rfp.id}`}
-              target="_blank"
-              rel="noreferrer"
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow-2xs"
+              {exportingType === "pdf" ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Download className="w-3.5 h-3.5" />}
+              <span>Export Executive Summary</span>
+            </button>
+            <button
+              onClick={() => handleExport("excel", `Compliance_Matrix_RFP_${rfp.id}.csv`)}
+              disabled={exportingType !== null}
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-60 text-white rounded-xl text-xs font-bold shadow-2xs cursor-pointer"
             >
-              <Download className="w-3.5 h-3.5" />
+              {exportingType === "excel" ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Download className="w-3.5 h-3.5" />}
               <span>Export Excel Matrix</span>
-            </a>
+            </button>
           </div>
         </div>
 

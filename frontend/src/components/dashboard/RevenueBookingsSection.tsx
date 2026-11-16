@@ -30,6 +30,7 @@ interface IncompleteProfile {
 interface DashboardMetrics {
   revenue_chart_data: PipelineData[];
   total_pipeline: string;
+  pipeline_unit?: string;
   incomplete_profiles: IncompleteProfile[];
   recent_extractions: any[];
 }
@@ -123,7 +124,7 @@ export default function RevenueBookingsSection() {
             </h3>
           </div>
           <span className="text-xs font-black text-slate-900">
-            {metrics?.total_pipeline || "$0"}
+            {metrics?.total_pipeline || "₹0"}
           </span>
         </div>
 
@@ -137,9 +138,12 @@ export default function RevenueBookingsSection() {
               <ComposedChart data={chartData} margin={{ top: 10, right: 0, left: -25, bottom: 0 }}>
                 <XAxis dataKey="month" tick={{ fontSize: 9, fill: "#64748b" }} axisLine={false} tickLine={false} />
                 <YAxis tick={{ fontSize: 9, fill: "#64748b" }} axisLine={false} tickLine={false} />
-                <Tooltip contentStyle={{ backgroundColor: "#111625", border: "none", borderRadius: "8px" }} />
-                <Bar dataKey="pipeline" fill="#c8102e" radius={[2, 2, 0, 0]} barSize={6} name="Pipeline ($K)" />
-                <Line type="monotone" dataKey="target" stroke="#111625" strokeWidth={1.5} dot={false} name="Target ($K)" />
+                <Tooltip 
+                  contentStyle={{ backgroundColor: "#111625", border: "none", borderRadius: "8px", color: "#fff" }} 
+                  formatter={(value: any) => [`₹${value} ${metrics?.pipeline_unit || "Cr"}`, ""]}
+                />
+                <Bar dataKey="pipeline" fill="#c8102e" radius={[2, 2, 0, 0]} barSize={6} name={`Pipeline (₹${metrics?.pipeline_unit || "Cr"})`} />
+                <Line type="monotone" dataKey="target" stroke="#111625" strokeWidth={1.5} dot={false} name={`Target (₹${metrics?.pipeline_unit || "Cr"})`} />
               </ComposedChart>
             </ResponsiveContainer>
           </div>
@@ -154,11 +158,11 @@ export default function RevenueBookingsSection() {
         <div className="flex items-center justify-center gap-3 text-[10px] font-medium text-slate-600 pt-1">
           <div className="flex items-center gap-1">
             <span className="w-2 h-2 rounded-xs bg-[#c8102e]"></span>
-            <span>Est. Pipeline ($K)</span>
+            <span>Est. Pipeline (₹{metrics?.pipeline_unit || "Cr"})</span>
           </div>
           <div className="flex items-center gap-1">
             <span className="w-2 h-0.5 bg-[#111625]"></span>
-            <span>Target Line ($K)</span>
+            <span>Target Line (₹{metrics?.pipeline_unit || "Cr"})</span>
           </div>
         </div>
       </div>

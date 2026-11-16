@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import Link from "next/link";
-import axios from "axios";
+import { api } from '@/lib/api';
 import {
   ArrowLeft,
   Sparkles,
@@ -164,7 +164,7 @@ function AiStrategyBullet({ text }: { text: string }) {
 
 export default function CustomerDetailPage() {
   const params = useParams();
-  const rawName = params?.name as string;
+  const rawName = Array.isArray(params?.name) ? params.name.join("/") : (params?.name as string);
   const customerName = decodeURIComponent(rawName || "");
 
   const [detail, setDetail] = useState<CustomerDetail | null>(null);
@@ -173,8 +173,7 @@ export default function CustomerDetailPage() {
 
   useEffect(() => {
     if (!customerName) return;
-    axios
-      .get<CustomerDetail>(`${API_BASE_URL}/api/v1/customers/${encodeURIComponent(customerName)}`)
+    api.get<CustomerDetail>('/api/v1/customers/detail', { params: { name: customerName } })
       .then((res) => setDetail(res.data))
       .catch((err) => {
         console.error("Failed to load customer detail:", err);
@@ -220,7 +219,7 @@ export default function CustomerDetailPage() {
     },
     {
       label: "Pipeline Value",
-      value: detail.total_opportunity_value,
+      value: detail.total_opportunity_value === "Unspecified" ? "Unspecified" : detail.total_opportunity_value,
       icon: DollarSign,
       color: "text-emerald-600 bg-emerald-50",
     },
@@ -533,7 +532,11 @@ export default function CustomerDetailPage() {
                             <span>{rfp.submission_deadline || "TBD"}</span>
                           </div>
                         </td>
-                        <td className="p-4 font-bold text-slate-900">{rfp.budget || "TBD"}</td>
+                        <td className="p-4 font-bold text-slate-900">
+                          {(!rfp.budget || rfp.budget.toLowerCase() === "not specified" || rfp.budget.toLowerCase() === "tbd" || rfp.budget === "N/A") 
+                            ? <span className="text-slate-400 font-medium">Unspecified</span> 
+                            : rfp.budget}
+                        </td>
                         <td className="p-4">
                           {rfp.risk_score && rfp.risk_score !== "N/A" ? (
                             <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${rfpRisk.badge}`}>

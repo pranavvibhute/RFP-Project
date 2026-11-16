@@ -1,21 +1,31 @@
 "use client";
 
+import { useState } from "react";
 import DashboardLayout from "@/components/layout/DashboardLayout";
-import { FileSpreadsheet, Download, FileText, CheckCircle2 } from "lucide-react";
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+import { FileSpreadsheet, Download, FileText, Loader2 } from "lucide-react";
+import { api } from "@/lib/api";
 
 export default function ReportsPage() {
-  const handleDownloadPDF = () => {
-    window.open(`${API_BASE_URL}/api/v1/reports/pdf`, "_blank");
-  };
+  const [downloading, setDownloading] = useState<string | null>(null);
 
-  const handleDownloadExcel = () => {
-    window.open(`${API_BASE_URL}/api/v1/reports/excel`, "_blank");
-  };
-
-  const handleDownloadDocx = () => {
-    window.open(`${API_BASE_URL}/api/v1/reports/docx/1`, "_blank");
+  const downloadFile = async (url: string, filename: string, key: string) => {
+    try {
+      setDownloading(key);
+      const res = await api.get(url, { responseType: "blob" });
+      const blob = new Blob([res.data]);
+      const blobUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = blobUrl;
+      link.setAttribute("download", filename);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(blobUrl);
+    } catch (err) {
+      console.error(`Failed to download ${key}:`, err);
+    } finally {
+      setDownloading(null);
+    }
   };
 
   return (
@@ -39,10 +49,11 @@ export default function ReportsPage() {
               <p className="text-xs text-slate-500 mt-1">Full professional Word report with Executive Summary, Go/No-Go Decision, SLA Penalties, and Formatted Requirements Table.</p>
             </div>
             <button
-              onClick={handleDownloadDocx}
-              className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-xl text-xs font-bold shadow-xs hover:bg-blue-700 transition"
+              onClick={() => downloadFile("/api/v1/reports/docx/1", "BidWise_Report_Sample.docx", "docx")}
+              disabled={downloading !== null}
+              className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white rounded-xl text-xs font-bold shadow-xs transition cursor-pointer"
             >
-              <Download className="w-4 h-4" />
+              {downloading === "docx" ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
               <span>Download Word (.docx)</span>
             </button>
           </div>
@@ -56,10 +67,11 @@ export default function ReportsPage() {
               <p className="text-xs text-slate-500 mt-1">High-level summary formatted with project overview, key deadlines, budget, and risk evaluation across all RFPs.</p>
             </div>
             <button
-              onClick={handleDownloadPDF}
-              className="flex items-center gap-2 px-4 py-2 bg-[#c8102e] text-white rounded-xl text-xs font-bold shadow-xs hover:bg-[#a00c24] transition"
+              onClick={() => downloadFile("/api/v1/reports/pdf", "Portfolio_Executive_Report.txt", "pdf")}
+              disabled={downloading !== null}
+              className="flex items-center gap-2 px-4 py-2 bg-[#c8102e] hover:bg-[#a00c24] disabled:opacity-60 text-white rounded-xl text-xs font-bold shadow-xs transition cursor-pointer"
             >
-              <Download className="w-4 h-4" />
+              {downloading === "pdf" ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
               <span>Download Executive PDF Report</span>
             </button>
           </div>
@@ -73,10 +85,11 @@ export default function ReportsPage() {
               <p className="text-xs text-slate-500 mt-1">Full spreadsheet containing categorised requirements, priorities, and assigned compliance statuses.</p>
             </div>
             <button
-              onClick={handleDownloadExcel}
-              className="flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-xl text-xs font-bold shadow-xs hover:bg-emerald-700 transition"
+              onClick={() => downloadFile("/api/v1/reports/excel", "All_RFPs_Compliance_Matrix.csv", "excel")}
+              disabled={downloading !== null}
+              className="flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-60 text-white rounded-xl text-xs font-bold shadow-xs transition cursor-pointer"
             >
-              <Download className="w-4 h-4" />
+              {downloading === "excel" ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
               <span>Download Excel Matrix (CSV)</span>
             </button>
           </div>

@@ -125,7 +125,13 @@ function CustomerCard({ customer }: { customer: CustomerProfile }) {
       <div className="grid grid-cols-2 gap-px bg-slate-100 border-b border-slate-100">
         <div className="bg-white p-3">
           <p className="text-[10px] text-slate-400 font-semibold uppercase tracking-wide">Pipeline</p>
-          <p className="text-sm font-black text-slate-900 mt-0.5">{customer.total_opportunity_value}</p>
+          <p className="text-sm font-black text-slate-900 mt-0.5">
+            {customer.total_opportunity_value === "Unspecified" ? (
+              <span className="text-slate-400 font-medium text-xs">Unspecified</span>
+            ) : (
+              customer.total_opportunity_value
+            )}
+          </p>
         </div>
         <div className="bg-white p-3">
           <p className="text-[10px] text-slate-400 font-semibold uppercase tracking-wide">RFPs</p>
@@ -218,7 +224,15 @@ export default function CustomersPage() {
     },
     {
       label: "Total Pipeline",
-      value: loading ? "..." : `$${(totalPipeline / 1_000_000).toFixed(1)}M`,
+      value: loading
+        ? "..."
+        : totalPipeline >= 10_000_000
+        ? `₹${(totalPipeline / 10_000_000).toFixed(1)} Cr`
+        : totalPipeline >= 100_000
+        ? `₹${(totalPipeline / 100_000).toFixed(1)} Lakh`
+        : totalPipeline > 0
+        ? `₹${totalPipeline.toLocaleString("en-IN")}`
+        : "Unspecified",
       icon: DollarSign,
       color: "bg-emerald-50 text-emerald-600",
     },
@@ -392,7 +406,13 @@ export default function CustomersPage() {
                             {c.segment}
                           </span>
                         </td>
-                        <td className="p-4 font-bold text-slate-900">{c.total_opportunity_value}</td>
+                        <td className="p-4 font-bold text-slate-900">
+                          {c.total_opportunity_value === "Unspecified" ? (
+                            <span className="text-slate-400 font-medium text-xs">Unspecified</span>
+                          ) : (
+                            c.total_opportunity_value
+                          )}
+                        </td>
                         <td className="p-4 font-semibold text-slate-700">{c.total_rfps}</td>
                         <td className="p-4">
                           <div className="flex items-center gap-1.5">

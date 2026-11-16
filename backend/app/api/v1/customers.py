@@ -17,13 +17,17 @@ router = APIRouter(prefix="/customers", tags=["Customer Intelligence"])
 def _classify_segment(customer_name: str) -> str:
     """Classify customer segment based on name heuristics."""
     name_lower = customer_name.lower()
-    if any(k in name_lower for k in ["city", "county", "municipality", "gov", "department", "public", "riverdale"]):
+    if any(k in name_lower for k in [
+        "city", "county", "municipality", "gov", "department", "public", 
+        "riverdale", "state", "ministry", "authority", "council", 
+        "registrar", "academy", "commission", "board", "administration"
+    ]):
         return "Government"
-    if any(k in name_lower for k in ["bank", "finance", "insurance", "capital"]):
+    if any(k in name_lower for k in ["bank", "finance", "insurance", "capital", "retirement"]):
         return "Financial Services"
     if any(k in name_lower for k in ["health", "hospital", "medical", "pharma"]):
         return "Healthcare"
-    if any(k in name_lower for k in ["tech", "software", "systems", "solutions", "data"]):
+    if any(k in name_lower for k in ["tech", "software", "systems", "solutions", "data", "technologies"]):
         return "Enterprise Tech"
     return "Enterprise"
 
@@ -41,20 +45,68 @@ def _classify_industry(customer_name: str, segment: str) -> str:
     return "Enterprise / Commercial"
 
 
+import re
+
+def _parse_budget_info(budget_str: str | None) -> tuple[float, str]:
+    """
+    Parse budget string into (numeric_value, display_string).
+    Returns (0.0, "Unspecified") if no legitimate amount is stated.
+    """
+    if not budget_str:
+        return 0.0, "Unspecified"
+    
+    cleaned = str(budget_str).strip()
+    if not cleaned or cleaned.lower() in [
+        "not specified", "none", "n/a", "na", "tbd", "unknown", 
+        "to be decided", "unspecified", "null", "undefined"
+    ]:
+        return 0.0, "Unspecified"
+
+    # Indian formats: Crore / Lakh
+    crore_m = re.search(r"([\d\.]+)\s*(?:crore|cr)", cleaned, re.IGNORECASE)
+    if crore_m:
+        val = float(crore_m.group(1)) * 10_000_000
+        return val, f"INR {crore_m.group(1)} Cr"
+
+    lakh_m = re.search(r"([\d\.]+)\s*(?:lakh|lac)", cleaned, re.IGNORECASE)
+    if lakh_m:
+        val = float(lakh_m.group(1)) * 100_000
+        return val, f"INR {lakh_m.group(1)} Lakh"
+
+    # Strip currency signs, commas
+    norm = cleaned.replace("$", "").replace("USD", "").replace(",", "").strip()
+
+    # Match millions: e.g. 1.5M, 20m
+    m_match = re.search(r"^([\d\.]+)\s*[mM]$", norm)
+    if m_match:
+        val = float(m_match.group(1)) * 1_000_000
+        return val, f"₹{val:,.0f}"
+
+    # Match thousands: e.g. 500k
+    k_match = re.search(r"^([\d\.]+)\s*[kK]$", norm)
+    if k_match:
+        val = float(k_match.group(1)) * 1_000
+        return val, f"₹{val:,.0f}"
+
+    # Direct numeric
+    try:
+        val = float(norm)
+        if val > 0:
+            return val, f"₹{val:,.0f}"
+    except ValueError:
+        pass
+
+    # If it's a specific textual description, preserve it if short, otherwise Unspecified
+    if len(cleaned) <= 30 and any(c.isdigit() for c in cleaned):
+        return 0.0, cleaned
+
+    return 0.0, "Unspecified"
+
+
 def _parse_budget(budget_str: str | None) -> float:
     """Parse budget string into a numeric value."""
-    if not budget_str:
-        return 0.0
-    b = (budget_str or "").replace("$", "").replace(",", "").strip()
-    try:
-        if "k" in b.lower():
-            return float(b.lower().replace("k", "")) * 1_000
-        elif "m" in b.lower():
-            return float(b.lower().replace("m", "")) * 1_000_000
-        else:
-            return float(b)
-    except ValueError:
-        return 500_000.0
+    val, _ = _parse_budget_info(budget_str)
+    return val
 
 
 def _build_risk_radar(analyses: list[Analysis], requirements: list[Requirement]) -> dict[str, int]:
@@ -106,9 +158,11 @@ def list_customer_intelligence(db: Session = Depends(get_db)) -> list[dict[str, 
         total_rfps = len(c_rfps)
 
         total_budget_val = 0.0
+        specified_budget_count = 0
         high_risk_count = 0
         latest_date = None
         all_categories: list[str] = []
+        budget_labels: list[str] = []
 
         for rfp in c_rfps:
             if rfp.created_at:
@@ -119,7 +173,12 @@ def list_customer_intelligence(db: Session = Depends(get_db)) -> list[dict[str, 
             if analysis:
                 if (analysis.overall_risk_score or "").lower() == "high":
                     high_risk_count += 1
-                total_budget_val += _parse_budget(analysis.budget)
+                
+                num_val, label = _parse_budget_info(analysis.budget)
+                if label != "Unspecified":
+                    total_budget_val += num_val
+                    specified_budget_count += 1
+                    budget_labels.append(label)
 
                 # Collect requirement categories
                 reqs = db.query(Requirement).filter(Requirement.analysis_id == analysis.id).all()
@@ -141,7 +200,12 @@ def list_customer_intelligence(db: Session = Depends(get_db)) -> list[dict[str, 
         # Engagement trend: simple heuristic
         trend = "Growing" if total_rfps > 2 else "Stable" if total_rfps > 1 else "New"
 
-        budget_display = f"${total_budget_val:,.0f}" if total_budget_val > 0 else "$500,000"
+        if total_budget_val > 0:
+            budget_display = f"₹{total_budget_val:,.0f}"
+        elif budget_labels:
+            budget_display = ", ".join(budget_labels[:2])
+        else:
+            budget_display = "Unspecified"
 
         results.append({
             "customer_name": c_name,
@@ -149,7 +213,7 @@ def list_customer_intelligence(db: Session = Depends(get_db)) -> list[dict[str, 
             "industry": industry,
             "total_rfps": total_rfps,
             "total_opportunity_value": budget_display,
-            "total_opportunity_value_raw": total_budget_val if total_budget_val > 0 else 500_000,
+            "total_opportunity_value_raw": total_budget_val,
             "overall_risk_profile": dominant_risk,
             "win_propensity_score": win_score,
             "last_rfp_date": latest_date.strftime("%d/%m/%Y") if latest_date else "31/07/2026",
@@ -247,16 +311,49 @@ Synthesize this research into 3 clear, distinct paragraphs:
         }
 
 
-@router.get("/{customer_name}")
+@router.get("/detail")
+def get_customer_detail_query(name: str, db: Session = Depends(get_db)) -> dict[str, Any]:
+    """Get customer detail via query parameter to safely handle names with slashes, brackets, and special characters."""
+    return get_customer_detail(name, db)
+
+
+@router.get("/{customer_name:path}")
 def get_customer_detail(customer_name: str, db: Session = Depends(get_db)) -> dict[str, Any]:
     """
     Get deep Customer Intelligence profile including historical RFPs,
     demanded requirements, AI win strategy, requirement breakdown charts,
     and a risk radar across 5 strategic dimensions.
     """
-    rfps = db.query(RFP).filter(RFP.customer_name.ilike(f"%{customer_name}%")).all()
+    cleaned_name = (customer_name or "").strip()
+    if not cleaned_name:
+        raise HTTPException(status_code=400, detail="Customer name is required")
+
+    # 1. Exact match first (case-insensitive)
+    rfps = db.query(RFP).filter(RFP.customer_name.ilike(cleaned_name)).all()
+
+    # 2. If not found by exact match, try substring match
     if not rfps:
-        rfps = db.query(RFP).all()  # Fallback to all if match not exact
+        rfps = db.query(RFP).filter(RFP.customer_name.ilike(f"%{cleaned_name}%")).all()
+
+    # 3. If still not found, check if a stored customer name is contained within cleaned_name
+    if not rfps:
+        all_rfps = db.query(RFP).all()
+        for r in all_rfps:
+            if r.customer_name and (
+                r.customer_name.lower() in cleaned_name.lower() or 
+                cleaned_name.lower() in r.customer_name.lower()
+            ):
+                rfps.append(r)
+
+    # 4. If no RFPs match, return a clean 404 or empty profile for this customer (NEVER return all RFPs!)
+    if not rfps:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Customer '{cleaned_name}' not found."
+        )
+
+    # Use the canonical customer name from the first matched RFP if available
+    canonical_customer_name = rfps[0].customer_name or cleaned_name
 
     rfp_ids = [r.id for r in rfps]
     analyses = db.query(Analysis).filter(Analysis.rfp_id.in_(rfp_ids)).all() if rfp_ids else []
@@ -265,10 +362,18 @@ def get_customer_detail(customer_name: str, db: Session = Depends(get_db)) -> di
 
     # Aggregate financials
     total_budget = sum(_parse_budget(a.budget) for a in analyses)
+    specified_labels = [_parse_budget_info(a.budget)[1] for a in analyses if _parse_budget_info(a.budget)[1] != "Unspecified"]
     high_risk_count = sum(1 for a in analyses if (a.overall_risk_score or "").lower() == "high")
 
-    segment = _classify_segment(customer_name)
-    industry = _classify_industry(customer_name, segment)
+    if total_budget > 0:
+        opportunity_display = f"₹{total_budget:,.0f}"
+    elif specified_labels:
+        opportunity_display = ", ".join(specified_labels[:2])
+    else:
+        opportunity_display = "Unspecified"
+
+    segment = _classify_segment(canonical_customer_name)
+    industry = _classify_industry(canonical_customer_name, segment)
     dominant_risk = "High" if high_risk_count > 0 else "Medium" if len(rfps) > 1 else "Low"
     base_score = 88 if segment == "Government" else 85
     win_score = max(60, min(98, base_score - high_risk_count * 5))
@@ -287,7 +392,7 @@ def get_customer_detail(customer_name: str, db: Session = Depends(get_db)) -> di
     risk_context = f"{high_risk_count} high-risk RFP(s)" if high_risk_count else "low risk profile"
     prompt = f"""You are a senior business development strategist. Analyze the buyer intelligence profile below and write an actionable win strategy.
 
-Customer: "{customer_name}"
+Customer: "{canonical_customer_name}"
 Segment: {segment}
 Industry: {industry}
 Number of RFPs submitted: {len(rfps)}
@@ -343,16 +448,16 @@ Keep each bullet under 25 words. Be specific to this customer's profile."""
             "submission_deadline": a.submission_deadline if a else "N/A",
         })
 
-    reputation = _fetch_reputation_profile(customer_name, segment, industry)
+    reputation = _fetch_reputation_profile(canonical_customer_name, segment, industry)
 
     return {
-        "customer_name": customer_name,
+        "customer_name": canonical_customer_name,
         "segment": segment,
         "industry": industry,
         "reputation_profile": reputation,
         "total_rfps": len(rfps),
-        "total_opportunity_value": f"${total_budget:,.0f}" if total_budget > 0 else "$1,200,000",
-        "total_opportunity_value_raw": total_budget if total_budget > 0 else 1_200_000,
+        "total_opportunity_value": opportunity_display,
+        "total_opportunity_value_raw": total_budget,
         "overall_risk_profile": dominant_risk,
         "win_propensity_score": win_score,
         "compliance_strictness": "Very High" if dominant_risk == "High" else "Standard",

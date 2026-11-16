@@ -47,9 +47,10 @@
 
 ### 📊 Modern Next.js 16 Web Dashboard
 - **Authentication**: JWT-based authentication with localStorage token storage and cookie-based session management.
+- **Organization Profile**: Dedicated portal (`/organization`) for enterprise profile management, certifications (ISO, SOC 2), clearances, core competencies, and past performance benchmarks used by the Gap Analysis agent.
 - **Dashboard**: Executive summary with RFP stats, compliance rates, pipeline revenue charts, and customer intelligence.
 - **RFP Registry**: Full registry view with stats, charts, drill-down to detail pages.
-- **RFP Detail**: Full breakdown with executive summary, requirements matrix, risk scores, bid recommendations.
+- **RFP Detail**: Full breakdown with executive summary, requirements matrix, risk scores, bid recommendations, and multi-format export (.docx, .pdf, .xlsx).
 - **Customer Intelligence**: Customer profile views with RFP history and risk exposure.
 - **RAG Q&A Assistant**: In-document interactive chat grounded in vector chunks via `/rfps/{id}/chat`.
 - **Requirements Matrix**: Filterable matrix with priority and status compliance tracking.
@@ -167,7 +168,7 @@ RFP-Project/
 │   │   │   ├── auth.py          # User authentication endpoints
 │   │   │   ├── customers.py     # Customer & organizational management
 │   │   │   ├── health.py        # System health & diagnostic status
-│   │   │   ├── reports.py       # Analytics & compliance reporting
+│   │   │   ├── reports.py       # Analytics & compliance reporting (.docx, .pdf, .xlsx)
 │   │   │   ├── requirements.py  # Extracted RFP requirement endpoints
 │   │   │   ├── rfps.py          # /api/v1/rfps Registry & RAG Q&A endpoints
 │   │   │   └── settings.py      # AI provider & vector config updates
@@ -195,11 +196,11 @@ RFP-Project/
 │   │   │   │   └── vector_store.py # Qdrant client & vector operations
 │   │   │   ├── document/        # PyMuPDF table & DOCX text extraction
 │   │   │   └── rfp/             # Upload service & background processing
-│   │   │   └── main.py              # FastAPI application bootstrap
-│   │   ├── tests/                   # Pytest test suite
-│   │   ├── venv_gpu/                # Python 3.12 + PyTorch CUDA 12.4 environment
-│   │   ├── requirements.txt         # Backend Python dependencies
-│   │   └── .env                     # Environment variables
+│   │   └── main.py              # FastAPI application bootstrap
+│   ├── tests/                   # Pytest test suite (10 unit/integration tests)
+│   ├── gpu_venv/                # Python 3.12 / 3.14 + PyTorch CUDA environment
+│   ├── requirements.txt         # Backend Python dependencies
+│   └── .env                     # Environment variables
 │
 └── frontend/                    # Next.js 16 Web Dashboard
     └── src/
@@ -207,12 +208,15 @@ RFP-Project/
         │   ├── dashboard/       # Executive summary & pipeline metrics
         │   ├── upload/          # Live stopwatch & multi-agent analysis portal
         │   ├── rfps/            # RFP Registry table with live DB sync
+        │   │   └── [id]/        # Drill-down RFP detail, simulator, and export views
+        │   ├── organization/    # Organization info & capability profile management
         │   ├── customers/       # Customer Intelligence pages
         │   ├── requirements/    # Interactive compliance matrix
         │   ├── risks/           # Risk assessment & SLA penalty portal
         │   ├── analysis/        # AI Document Intelligence Logs
-        │   ├── settings/        # AI model configuration & threshold controls
-        │   └── components/      # Reusable UI primitives & layouts
+        │   ├── login/           # Authentication login page
+        │   └── settings/        # AI model configuration & threshold controls
+        └── components/          # Reusable UI primitives, sections, and layouts
 ```
 
 ---
@@ -235,12 +239,12 @@ RFP-Project/
 2. **Activate the GPU virtual environment** (or create one):
    ```powershell
    # If creating new:
-   py -3.12 -m venv venv_gpu
-   .\venv_gpu\Scripts\pip install torch --index-url https://download.pytorch.org/whl/cu124
-   .\venv_gpu\Scripts\pip install -r requirements.txt
+   py -3.12 -m venv gpu_venv
+   .\gpu_venv\Scripts\pip install torch --index-url https://download.pytorch.org/whl/cu124
+   .\gpu_venv\Scripts\pip install -r requirements.txt
 
    # If already created:
-   .\venv_gpu\Scripts\Activate.ps1
+   .\gpu_venv\Scripts\Activate.ps1
    ```
 
 3. **Configure `.env`**:
@@ -281,8 +285,20 @@ RFP-Project/
    - Web App: [http://localhost:3000](http://localhost:3000)
    - Upload & Multi-Agent Portal: [http://localhost:3000/upload](http://localhost:3000/upload)
    - RFP Registry: [http://localhost:3000/rfps](http://localhost:3000/rfps)
+   - Organization Profile: [http://localhost:3000/organization](http://localhost:3000/organization)
    - Customer Intelligence: [http://localhost:3000/customers](http://localhost:3000/customers)
    - Settings: [http://localhost:3000/settings](http://localhost:3000/settings)
+
+---
+
+### 🔑 Default Trial & Demo Credentials
+
+When authentication is enabled, you can sign in using either of the seeded accounts:
+
+| Role | Email / Username | Password | Access Level |
+| :--- | :--- | :--- | :--- |
+| **Admin** | `admin@company.com` | `admin123` | Full access (Uploads, Settings, Org Profile, Approvals) |
+| **Proposal Team** | `test@test.com` | `test123` | Analyst access (Review RFPs, Matrices, Simulations) |
 
 ---
 
@@ -292,10 +308,10 @@ Run the automated test suite with `pytest`:
 
 ```powershell
 cd backend
-.\venv_gpu\Scripts\pytest -v
+.\gpu_venv\Scripts\pytest -v
 ```
 
-All 7 test suites validate:
+All 3 test suites (10 unit & integration tests) validate:
 - PDF & DOCX text/table extraction
 - Multi-Agent Orchestrator parallel execution
 - Automatic fallback mechanisms

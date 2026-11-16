@@ -277,25 +277,10 @@ def get_dashboard_overview(
             "char_count": len(r.extracted_text) if r.extracted_text else 0,
         })
 
-    # Helper to parse budget strings like "$250K" or "$1.2M"
+    # Helper to parse budget strings into numeric values (handling Cr, Lakh, M, K, USD, INR)
     def parse_budget_val(b_str: str | None) -> float:
-        if not b_str:
-            return 0.0
-        b_lower = b_str.lower().strip()
-        if b_lower in ("not specified", "tbd", "tba", "n/a", "na"):
-            return 0.0
-        cleaned = "".join(c for c in b_str if c.isdigit() or c in ".kmKM")
-        if not cleaned:
-            return 0.0
-        try:
-            val = cleaned.lower()
-            if "k" in val:
-                return float(val.replace("k", "")) * 1000
-            if "m" in val:
-                return float(val.replace("m", "")) * 1000000
-            return float(val)
-        except Exception:
-            return 0.0
+        from app.api.v1.customers import _parse_budget
+        return _parse_budget(b_str)
 
     # 2. Pipeline Revenue Trends (Monthly)
     monthly_data = {
@@ -312,12 +297,24 @@ def get_dashboard_overview(
                 monthly_data[m_str] += val
 
     revenue_chart_data = []
+    # If values are in Crores, show in Cr (1e7) or Lakhs (1e5)
+    unit_divisor = 10_000_000 if total_pipeline >= 10_000_000 else 100_000 if total_pipeline >= 100_000 else 1_000
     for month, val in monthly_data.items():
+        pipeline_val = round(val / unit_divisor, 2)
         revenue_chart_data.append({
             "month": month,
-            "pipeline": round(val / 1000, 1),
-            "target": round((val * 1.2) / 1000, 1)
+            "pipeline": pipeline_val,
+            "target": round(pipeline_val * 1.25, 2) if pipeline_val > 0 else 0.0
         })
+
+    def format_total_pipeline(val: float) -> str:
+        if val >= 10_000_000:
+            return f"₹{(val / 10_000_000):.2f} Cr"
+        elif val >= 100_000:
+            return f"₹{(val / 100_000):.2f} Lakh"
+        elif val > 0:
+            return f"₹{val:,.0f}"
+        return "Unspecified"
 
     # 3. Incomplete Profiles / Missing details list
     incomplete_profiles = []
@@ -371,7 +368,8 @@ def get_dashboard_overview(
     return {
         "recent_extractions": recent_extractions,
         "revenue_chart_data": revenue_chart_data,
-        "total_pipeline": f"${total_pipeline:,.0f}" if total_pipeline > 0 else "$0",
+        "total_pipeline": format_total_pipeline(total_pipeline),
+        "pipeline_unit": "Cr" if total_pipeline >= 10_000_000 else "Lakh" if total_pipeline >= 100_000 else "K",
         "incomplete_profiles": incomplete_profiles[:5] if incomplete_profiles else [],
         "compliance": {
             "rate": compliance_rate,

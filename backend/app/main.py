@@ -49,7 +49,12 @@ async def auth_middleware(request: Request, call_next):
         return await call_next(request)
 
     path = request.url.path
-    if path in EXEMPT_PATHS or path.startswith("/static") or path.startswith("/reports/"):
+    if (
+        path in EXEMPT_PATHS
+        or path.startswith("/static")
+        or path.startswith("/reports/")
+        or path.startswith("/api/v1/reports")
+    ):
         return await call_next(request)
 
     # Check Authorization header first (for API calls)
